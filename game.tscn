@@ -1,11 +1,54 @@
-[gd_scene load_steps=5 format=3 uid="uid://qmvuwaycrh23"]
+[gd_scene load_steps=14 format=3 uid="uid://qmvuwaycrh23"]
 
 [ext_resource type="PackedScene" uid="uid://2tuemeq172ed" path="res://assets/player1.glb" id="2_7jktm"]
 [ext_resource type="Script" uid="uid://datsunqwlf03j" path="res://scripts/player1.gd" id="2_fc0e3"]
 [ext_resource type="PackedScene" uid="uid://dgox0bxfmhs5x" path="res://assets/player2.glb" id="3_ryrav"]
 [ext_resource type="Script" uid="uid://dvjqtmjrk8g11" path="res://scripts/player2.gd" id="4_fc0e3"]
+[ext_resource type="Texture2D" uid="uid://cuysqabnbmyce" path="res://textures/firesis2.png" id="5_ryrav"]
+[ext_resource type="ArrayMesh" uid="uid://bj0oa2ney1qa4" path="res://assets/vfxbaser.obj" id="6_ryrav"]
+
+[sub_resource type="Environment" id="Environment_j5wjh"]
+background_mode = 3
+glow_enabled = true
+glow_blend_mode = 1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eow3j"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+shading_mode = 0
+vertex_color_use_as_albedo = true
+vertex_color_is_srgb = true
+albedo_texture = ExtResource("5_ryrav")
+
+[sub_resource type="Gradient" id="Gradient_ryrav"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.007168459)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_eow3j"]
+gradient = SubResource("Gradient_ryrav")
+
+[sub_resource type="Curve" id="Curve_j5wjh"]
+_data = [Vector2(0, 0), 0.0, 3.004926, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_vef74"]
+curve = SubResource("Curve_j5wjh")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_hve3p"]
+gravity = Vector3(0, 0, 0)
+scale_min = 2.0
+scale_max = 3.0
+scale_curve = SubResource("CurveTexture_vef74")
+color = Color(0.96040875, 0.7158691, 0.66819614, 1)
+color_ramp = SubResource("GradientTexture1D_eow3j")
+hue_variation_min = -0.07000002
+hue_variation_max = 0.039999977
 
 [node name="Game" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_j5wjh")
 
 [node name="Menu" type="Node" parent="."]
 
@@ -25,3 +68,13 @@ script = ExtResource("2_fc0e3")
 [node name="player2" parent="Playground" instance=ExtResource("3_ryrav")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37.43667, 0, 0)
 script = ExtResource("4_fc0e3")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.033277232, 0.9994463, 0, -0.9994463, 0.033277232, 37.438496, 6.91485, 0)
+material_override = SubResource("StandardMaterial3D_eow3j")
+amount = 2
+lifetime = 0.09999999999999999
+randomness = 1.0
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_hve3p")
+draw_pass_1 = ExtResource("6_ryrav")
