@@ -51,10 +51,10 @@ expand_icon = true
 
 [node name="Button3" type="Button" parent="."]
 layout_mode = 0
-offset_left = 467.0
-offset_top = 383.0
-offset_right = 720.0
-offset_bottom = 488.0
+offset_left = 463.0
+offset_top = 386.0
+offset_right = 716.0
+offset_bottom = 491.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = SubResource("FontFile_ouk20")
 text = "SALIR"

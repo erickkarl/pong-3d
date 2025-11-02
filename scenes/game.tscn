@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://qmvuwaycrh23"]
 
-[ext_resource type="PackedScene" uid="uid://2tuemeq172ed" path="res://assets/player1.glb" id="2_7jktm"]
-[ext_resource type="Script" uid="uid://datsunqwlf03j" path="res://scripts/player1.gd" id="2_fc0e3"]
-[ext_resource type="PackedScene" uid="uid://dgox0bxfmhs5x" path="res://assets/player2.glb" id="3_ryrav"]
-[ext_resource type="Script" uid="uid://dvjqtmjrk8g11" path="res://scripts/player2.gd" id="4_fc0e3"]
+[ext_resource type="PackedScene" uid="uid://2tuemeq172ed" path="res://assets/models/player1.glb" id="2_7jktm"]
+[ext_resource type="Script" uid="uid://datsunqwlf03j" path="res://scripts/player/player1.gd" id="2_fc0e3"]
+[ext_resource type="PackedScene" uid="uid://dgox0bxfmhs5x" path="res://assets/models/player2.glb" id="3_ryrav"]
+[ext_resource type="Script" uid="uid://dvjqtmjrk8g11" path="res://scripts/player/player2.gd" id="4_fc0e3"]
 
 [node name="Game" type="Node3D"]
 

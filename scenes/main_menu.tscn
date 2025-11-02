@@ -1,0 +1,30 @@
+[gd_scene load_steps=7 format=3 uid="uid://qrb5r7ouscjr"]
+
+[ext_resource type="Texture2D" uid="uid://dbw7j64akb0sh" path="res://assets/skybox/panorama_image.png" id="1_bqqt6"]
+[ext_resource type="ArrayMesh" uid="uid://b27px1bqhkmgw" path="res://assets/models/planets/GG-0001-N.obj" id="2_wu84c"]
+[ext_resource type="Script" uid="uid://besmsevbey4sj" path="res://scripts/planet.gd" id="3_8ln24"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_rtw2f"]
+panorama = ExtResource("1_bqqt6")
+
+[sub_resource type="Sky" id="Sky_oa1go"]
+sky_material = SubResource("PanoramaSkyMaterial_rtw2f")
+
+[sub_resource type="Environment" id="Environment_tbmy8"]
+background_mode = 2
+sky = SubResource("Sky_oa1go")
+
+[node name="Node3D" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_tbmy8")
+
+[node name="planet" type="MeshInstance3D" parent="."]
+mesh = ExtResource("2_wu84c")
+script = ExtResource("3_8ln24")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 4.975118, 0, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.48925886, -0.7166551, 0.49702242, -0.5027472, 0.6974278, 0.5107247, -0.7126507, 0, -0.701519, 3.0438538, 2.229261, -4.284778)
