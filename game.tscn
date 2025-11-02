@@ -1,3 +1,27 @@
-[gd_scene format=3 uid="uid://qmvuwaycrh23"]
+[gd_scene load_steps=5 format=3 uid="uid://qmvuwaycrh23"]
+
+[ext_resource type="PackedScene" uid="uid://2tuemeq172ed" path="res://assets/player1.glb" id="2_7jktm"]
+[ext_resource type="Script" uid="uid://datsunqwlf03j" path="res://scripts/player1.gd" id="2_fc0e3"]
+[ext_resource type="PackedScene" uid="uid://dgox0bxfmhs5x" path="res://assets/player2.glb" id="3_ryrav"]
+[ext_resource type="Script" uid="uid://dvjqtmjrk8g11" path="res://scripts/player2.gd" id="4_fc0e3"]
 
 [node name="Game" type="Node3D"]
+
+[node name="Menu" type="Node" parent="."]
+
+[node name="Playground" type="Node" parent="."]
+script = ExtResource("2_fc0e3")
+
+[node name="Camera3D" type="Camera3D" parent="Playground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 35.815193)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Playground"]
+transform = Transform3D(1, 0, 0, 0, 0.8935674, 0.44892916, 0, -0.44892916, 0.8935674, -21.109068, 14.444019, 20.886936)
+
+[node name="player1" parent="Playground" instance=ExtResource("2_7jktm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -37.201797, 0, 0)
+script = ExtResource("2_fc0e3")
+
+[node name="player2" parent="Playground" instance=ExtResource("3_ryrav")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37.43667, 0, 0)
+script = ExtResource("4_fc0e3")
