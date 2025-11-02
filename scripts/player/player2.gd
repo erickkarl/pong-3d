@@ -1,4 +1,4 @@
-extends "res://player.gd"
+extends "res://scripts/player/player.gd"
 
 func _ready() -> void:
 	move_up_key = KEY_UP

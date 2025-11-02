@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Pong3D"
-run/main_scene="uid://qmvuwaycrh23"
+run/main_scene="uid://cqee1e3st0630"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -19,3 +19,7 @@ config/icon="res://icon.svg"
 
 version_control/plugin_name="GitPlugin"
 version_control/autoload_on_startup=true
+
+[gui]
+
+common/main_scene="uid://qmvuwaycrh23"
