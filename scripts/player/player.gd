@@ -23,6 +23,14 @@ var top_exhaust: GPUParticles3D
 var bottom_exhaust: GPUParticles3D
 
 func _ready() -> void:
+	# Set up physics material for the collision body
+	var collision_body = get_node_or_null("CollisionBody")
+	if collision_body and collision_body is StaticBody3D:
+		var physics_material = PhysicsMaterial.new()
+		physics_material.bounce = 1.0  # Perfect bounce
+		physics_material.friction = 0.0  # No friction
+		collision_body.physics_material_override = physics_material
+
 	bottom_exhaust = fireAnimation.instantiate()
 	add_child(bottom_exhaust)
 	bottom_exhaust.position = Vector3(0, -8.450854, 0)

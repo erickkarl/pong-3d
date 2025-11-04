@@ -27,6 +27,12 @@ func create_wall(pos: Vector3, size: Vector3) -> void:
 	wall.position = pos
 	wall.name = "ArenaWalls"
 
+	# Create physics material for perfect bounce
+	var physics_material = PhysicsMaterial.new()
+	physics_material.bounce = 1.0  # Perfect bounce
+	physics_material.friction = 0.0  # No friction
+	wall.physics_material_override = physics_material
+
 	var collision_shape = CollisionShape3D.new()
 	var box_shape = BoxShape3D.new()
 	box_shape.size = size
