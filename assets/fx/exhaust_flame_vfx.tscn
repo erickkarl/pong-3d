@@ -1,0 +1,35 @@
+[gd_scene load_steps=7 format=3 uid="uid://bbpvx2qyy0una"]
+
+[ext_resource type="Texture2D" uid="uid://b2t8cvuqnulj" path="res://assets/textures/exhaustFlameText.png" id="1_4ohhq"]
+[ext_resource type="ArrayMesh" uid="uid://c5dngkss50tar" path="res://assets/fx/exhaustFlameModel.obj" id="2_br5wp"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0tnpc"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+shading_mode = 0
+vertex_color_use_as_albedo = true
+vertex_color_is_srgb = true
+albedo_texture = ExtResource("1_4ohhq")
+
+[sub_resource type="Curve" id="Curve_vtaks"]
+_data = [Vector2(0, 0), 0.0, 2.1348317, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_kvpfn"]
+curve = SubResource("Curve_vtaks")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_dinhu"]
+gravity = Vector3(0, 0, 0)
+scale_min = 2.0
+scale_max = 2.5
+scale_curve = SubResource("CurveTexture_kvpfn")
+color = Color(1.3528494, 0.90605414, 1.3528494, 1)
+
+[node name="exhaustFlameVFX1" type="GPUParticles3D"]
+transform = Transform3D(1, 0, 0, 0, 1.192488e-08, -0.99999994, 0, 0.99999994, 1.192488e-08, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_0tnpc")
+amount = 1
+lifetime = 0.15000000000000002
+process_material = SubResource("ParticleProcessMaterial_dinhu")
+draw_pass_1 = ExtResource("2_br5wp")

@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://qrb5r7ouscjr"]
+[gd_scene load_steps=8 format=3 uid="uid://qrb5r7ouscjr"]
 
 [ext_resource type="Texture2D" uid="uid://dbw7j64akb0sh" path="res://assets/skybox/panorama_image.png" id="1_bqqt6"]
 [ext_resource type="ArrayMesh" uid="uid://b27px1bqhkmgw" path="res://assets/models/planets/GG-0001-N.obj" id="2_wu84c"]
 [ext_resource type="Script" uid="uid://besmsevbey4sj" path="res://scripts/planet.gd" id="3_8ln24"]
+[ext_resource type="Texture2D" uid="uid://bqgctwss1eb8c" path="res://assets/ui/buttons/button_default.png" id="4_8ln24"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_rtw2f"]
 panorama = ExtResource("1_bqqt6")
@@ -28,3 +29,48 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 4.97
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.48925886, -0.7166551, 0.49702242, -0.5027472, 0.6974278, 0.5107247, -0.7126507, 0, -0.701519, 3.0438538, 2.229261, -4.284778)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -96.0
+offset_top = -334.0
+offset_right = 96.0
+offset_bottom = -100.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 3
+
+[node name="Play" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Jogar
+"
+icon = ExtResource("4_8ln24")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="Settings" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Configurações"
+icon = ExtResource("4_8ln24")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="Exit" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Sair"
+icon = ExtResource("4_8ln24")
+flat = true
+icon_alignment = 1
+expand_icon = true
