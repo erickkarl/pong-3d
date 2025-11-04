@@ -18,9 +18,12 @@ var max_y_position = 15.0
 var min_y_position = -15.0
 
 const fireAnimation = preload("res://assets/fx/exhaust_flame_vfx.tscn")
+const flareSFX = preload("res://assets/sfx/flareSFX.mp3")
 
 var top_exhaust: GPUParticles3D
 var bottom_exhaust: GPUParticles3D
+var flare_sound: AudioStreamPlayer3D
+var is_moving_state = false  # Track movement state for looping
 
 func _ready() -> void:
 	# Set up physics material for the collision body
@@ -46,21 +49,49 @@ func _ready() -> void:
 		top_exhaust.emitting = true
 		top_exhaust.local_coords = true
 
+	# Set up flare sound effect
+	flare_sound = AudioStreamPlayer3D.new()
+	add_child(flare_sound)
+	flare_sound.stream = flareSFX
+	# Connect finished signal to restart looping when moving
+	flare_sound.finished.connect(_on_flare_sound_finished)
+	flare_sound.volume_db = 0  # Adjust volume as needed
+
+
+func _on_flare_sound_finished() -> void:
+	# Restart the sound if we're still moving
+	if is_moving_state:
+		flare_sound.play()
+
 
 func _process(_delta: float) -> void:
 	var new_position = position
+	var is_moving = false
 
 	if(Input.is_key_pressed(move_up_key)):
 		new_position.y += speed
 		bottom_exhaust.visible = true
+		is_moving = true
 	else:
 		bottom_exhaust.visible = false
 
 	if(Input.is_key_pressed(move_down_key)):
 		new_position.y -= speed
 		top_exhaust.visible = true
+		is_moving = true
 	else:
 		top_exhaust.visible = false
+
+	# Update movement state
+	is_moving_state = is_moving
+
+	# Play or stop flare sound based on movement
+	if is_moving:
+		if not flare_sound.playing:
+			flare_sound.play()
+	else:
+		if flare_sound.playing:
+			flare_sound.stop()
 
 	# Clamp position to boundaries
 	new_position.y = clamp(new_position.y, min_y_position, max_y_position)
