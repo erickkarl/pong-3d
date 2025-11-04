@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://qmvuwaycrh23"]
+[gd_scene load_steps=11 format=3 uid="uid://qmvuwaycrh23"]
 
 [ext_resource type="Texture2D" uid="uid://dbw7j64akb0sh" path="res://assets/skybox/panorama_image.png" id="1_iywne"]
 [ext_resource type="PackedScene" uid="uid://2tuemeq172ed" path="res://assets/models/player1.glb" id="2_7jktm"]
 [ext_resource type="Script" uid="uid://datsunqwlf03j" path="res://scripts/player/player1.gd" id="2_fc0e3"]
 [ext_resource type="PackedScene" uid="uid://dgox0bxfmhs5x" path="res://assets/models/player2.glb" id="3_ryrav"]
 [ext_resource type="Script" uid="uid://dvjqtmjrk8g11" path="res://scripts/player/player2.gd" id="4_fc0e3"]
+[ext_resource type="PackedScene" uid="uid://bop44w6ja8tn6" path="res://assets/models/ballPrl.glb" id="6_p57ef"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_p57ef"]
 panorama = ExtResource("1_iywne")
@@ -18,6 +19,9 @@ sky = SubResource("Sky_oa1go")
 glow_enabled = true
 glow_intensity = 2.0
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_p57ef"]
+size = Vector3(100, 1, 100)
+
 [node name="Game" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -26,9 +30,6 @@ environment = SubResource("Environment_u5sy4")
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 35.815193)
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.8935674, 0.44892916, 0, -0.44892916, 0.8935674, -21.109068, 14.444019, 20.886936)
-
 [node name="player1" parent="." instance=ExtResource("2_7jktm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -37.201797, 0, 0)
 script = ExtResource("2_fc0e3")
@@ -36,3 +37,16 @@ script = ExtResource("2_fc0e3")
 [node name="player2" parent="." instance=ExtResource("3_ryrav")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37.43667, 0, 0)
 script = ExtResource("4_fc0e3")
+
+[node name="ballPrl" parent="." instance=ExtResource("6_p57ef")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.34384155, 16.743101, 26.124678)
+light_energy = 11.392
+light_indirect_energy = 2.979
+omni_range = 194.104
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.7537155, 0)
+shape = SubResource("BoxShape3D_p57ef")

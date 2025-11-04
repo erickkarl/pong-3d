@@ -1,5 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://qrb5r7ouscjr"]
+[gd_scene load_steps=9 format=3 uid="uid://qrb5r7ouscjr"]
 
+[ext_resource type="Script" uid="uid://cgikuecaaam7x" path="res://scripts/ui/main_menu.gd" id="1_8ln24"]
 [ext_resource type="Texture2D" uid="uid://dbw7j64akb0sh" path="res://assets/skybox/panorama_image.png" id="1_bqqt6"]
 [ext_resource type="ArrayMesh" uid="uid://b27px1bqhkmgw" path="res://assets/models/planets/GG-0001-N.obj" id="2_wu84c"]
 [ext_resource type="Script" uid="uid://besmsevbey4sj" path="res://scripts/planet.gd" id="3_8ln24"]
@@ -16,6 +17,7 @@ background_mode = 2
 sky = SubResource("Sky_oa1go")
 
 [node name="Node3D" type="Node3D"]
+script = ExtResource("1_8ln24")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_tbmy8")
@@ -74,3 +76,7 @@ icon = ExtResource("4_8ln24")
 flat = true
 icon_alignment = 1
 expand_icon = true
+
+[connection signal="pressed" from="VBoxContainer/Play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="VBoxContainer/Settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="VBoxContainer/Exit" to="." method="_on_exit_pressed"]
