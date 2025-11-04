@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://qmvuwaycrh23"]
+[gd_scene load_steps=18 format=3 uid="uid://qmvuwaycrh23"]
 
 [ext_resource type="Texture2D" uid="uid://dbw7j64akb0sh" path="res://assets/skybox/panorama_image.png" id="1_iywne"]
 [ext_resource type="PackedScene" uid="uid://2tuemeq172ed" path="res://assets/models/player1.glb" id="2_7jktm"]
@@ -26,9 +26,6 @@ glow_intensity = 2.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_trtic"]
 size = Vector3(2, 17, 2)
-
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_kvpfn"]
-friction = 0.0
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ir15t"]
 radius = 1.5
@@ -76,7 +73,6 @@ omni_range = 194.104
 [node name="Ball" type="RigidBody3D" parent="."]
 collision_layer = 2
 collision_mask = 5
-physics_material_override = SubResource("PhysicsMaterial_kvpfn")
 gravity_scale = 0.0
 continuous_cd = true
 contact_monitor = true
