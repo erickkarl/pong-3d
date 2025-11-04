@@ -7,3 +7,6 @@ func _ready() -> void:
 	move_down_key = KEY_S
 	
 	speed = 0.5
+
+func _on_ball_body_entered(body: Node) -> void:
+	pass # Replace with function body.
