@@ -1,6 +1,40 @@
 # Godot Scene Setup Guide
 
-All the scripts have been created! Now you need to set up the scene in the Godot Editor. Follow these steps:
+All the scripts have been created! Now you need to set up the scene in the Godot Editor.
+
+## ⚠️ CRITICAL SETTINGS - READ FIRST
+
+Before following the setup steps, understand these critical requirements:
+
+### 1. **Linear Damp MUST Be Zero**
+- Ball will slow down over time if Linear Damp > 0
+- Set in Inspector AND verify mode is "Replace" not "Combine"
+- Scripts set it to 0, but Inspector can override
+
+### 2. **Physics Material is Essential**
+- Without it, ball loses energy on each collision
+- Must have `bounce = 1.0` and `friction = 0.0`
+- Apply to: Ball, Walls, and Paddle collision bodies
+
+### 3. **Contact Monitor Required**
+- RigidBody3D won't emit `body_entered` signals without it
+- Must enable Contact Monitor AND set Max Contacts Reported > 0
+
+### 4. **Axis Locking**
+- Ball needs X and Y unlocked for 2D movement
+- Z must be locked to keep it in the play plane
+- Inspector settings can override script values
+
+### 5. **Nested Collision Detection**
+- Ball hits the CollisionBody child, not Player parent
+- Scripts check `body.get_parent() is Player`
+- Scene structure matters!
+
+---
+
+## Setup Steps
+
+Follow these steps to configure the scene:
 
 ## Step 1: Update the Ball
 
@@ -15,6 +49,10 @@ All the scripts have been created! Now you need to set up the scene in the Godot
    - Continuous CD: `true`
    - **Contact Monitor: `true`** ← CRITICAL! Required for collision signals
    - **Max Contacts Reported: `4`**
+   - **Axis Lock Linear** ← Expand this section:
+     - Lock Linear X: `false` (unchecked)
+     - Lock Linear Y: `false` (unchecked)
+     - Lock Linear Z: `true` (checked) - keeps ball in 2D plane
 5. Attach the script: Click the script icon → Load → `res://scripts/ball.gd`
    - The script will automatically connect the collision signal
 6. Add a `CollisionShape3D` as a child of ballPrl:
@@ -178,10 +216,13 @@ This ensures the ball only collides with the right objects:
 
 ## Common Issues and Fixes
 
-### Ball doesn't move
+### Ball doesn't move or only moves up/down
+- **Check Axis Lock settings** - Make sure Lock Linear X is UNCHECKED
+- Verify Lock Linear Y is UNCHECKED
+- The script unlocks these automatically, but inspector settings may override
 - Check that the ball's `_ready()` function is being called
 - Verify gravity_scale is 0
-- Check that launch_ball() is being triggered
+- Check launch_ball() debug output shows X velocity is not zero
 
 ### Ball passes through paddles
 - **MOST COMMON:** Ensure Contact Monitor is enabled and Max Contacts Reported > 0
@@ -247,17 +288,58 @@ Game (Node3D)
             └── MainMenuButton (Button)
 ```
 
+## Final Checklist
+
+Before running the game, verify these critical settings:
+
+- [ ] Ball Linear Damp = 0 (mode: "Replace")
+- [ ] Ball Contact Monitor = true
+- [ ] Ball Max Contacts Reported = 4
+- [ ] Ball Axis Lock: X=false, Y=false, Z=true
+- [ ] Ball has Physics Material (bounce=1, friction=0)
+- [ ] Players have CollisionBody (StaticBody3D) children
+- [ ] Players have Physics Material (bounce=1, friction=0)
+- [ ] Arena script attached and walls visible
+- [ ] Score Zones in "score_zones" group
+- [ ] GameManager attached to GameManager node
+- [ ] HUD script attached to CanvasLayer
+- [ ] Button signals connected
+
+## Testing the Game
+
+1. **Press F5** to run
+2. **Ball should launch** after 1 second with horizontal movement
+3. **Ball should bounce** off walls and paddles without losing speed
+4. **Speed should increase** by 10% each paddle hit
+5. **Scores should update** when ball passes paddles
+6. **Game over at 5 points** with winner displayed
+7. **Restart button** resets the game
+8. **Main Menu button** returns to menu
+
+## Troubleshooting Quick Reference
+
+| Problem | Solution |
+|---------|----------|
+| Ball slows down | Check Linear Damp = 0 |
+| Ball only moves up/down | Unlock X axis |
+| No collisions | Enable Contact Monitor |
+| Ball passes through paddle | Add CollisionBody + Physics Material |
+| Multiple bounces | Already fixed (cooldown in script) |
+| Speed not increasing | Already fixed (multiplies whole vector) |
+
 ## Next Steps for Polish
 
-After getting the basic game working, consider adding:
-1. Sound effects (ball bounce, scoring, etc.)
-2. Background music
-3. Particle effects on paddle hits
-4. Camera shake on collisions
-5. Ball trail effect
-6. Better visuals for score zones
-7. Countdown before ball launch
-8. Pause menu
-9. Settings for difficulty/speed
+See `context.md` "Future Enhancements" section for ideas:
+- Audio (sounds & music)
+- Visual effects (trails, impacts, screen shake)
+- Game modes (AI, difficulty, time attack)
+- Settings menu (volume, controls, difficulty)
+- Stats tracking (high scores, longest rally)
 
-Have fun with your 3D Pong game!
+## Success!
+
+If you've followed all the steps and the checklist passes, you now have a fully functional 3D Pong game!
+
+**Enjoy playing and customizing your game!** 🎮
+
+For implementation details and troubleshooting, refer to `context.md`.

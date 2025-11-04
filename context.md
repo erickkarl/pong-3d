@@ -21,12 +21,17 @@ pong-3d/
 │   └── main_menu.tscn         # Main menu scene
 ├── scripts/
 │   ├── player/
-│   │   ├── player.gd          # Base player class
+│   │   ├── player.gd          # Base player class with boundaries & physics
 │   │   ├── player1.gd         # Player 1 (W/S keys)
 │   │   └── player2.gd         # Player 2 (Arrow keys)
 │   ├── ui/
-│   │   └── main_menu.gd       # Main menu logic
-│   └── planet.gd              # Planet/ball rotation logic
+│   │   ├── main_menu.gd       # Main menu logic
+│   │   └── game_hud.gd        # In-game HUD and scoring display
+│   ├── ball.gd                # Ball physics and collision handling
+│   ├── arena.gd               # Arena walls generation
+│   ├── score_zone.gd          # Score detection areas
+│   └── game_manager.gd        # Game state and score management
+├── SETUP_GUIDE.md             # Detailed scene setup instructions
 └── project.godot              # Godot project configuration
 ```
 
@@ -34,31 +39,59 @@ pong-3d/
 
 ### Completed Components
 
-1. **Project Setup**
+1. **Project Setup** ✅
    - Godot 4.5 project initialized
    - Git version control configured
-   - Basic folder structure established
+   - Complete folder structure established
+   - All core scripts implemented
 
-2. **Main Menu** (`scenes/main_menu.tscn` + `scripts/ui/main_menu.gd`)
+2. **Main Menu** ✅ (`scenes/main_menu.tscn` + `scripts/ui/main_menu.gd`)
    - Play button (transitions to game scene)
    - Exit button (quits game)
    - Settings button (placeholder)
 
-3. **Player System** (`scripts/player/player.gd`)
+3. **Player System** ✅ (`scripts/player/player.gd`)
    - Base Player class with movement controls
    - Configurable key bindings via exports
+   - Movement boundaries (clamp to min/max Y positions)
+   - Physics material with perfect bounce
    - Particle exhaust effects on movement
    - Two player instances:
      - Player 1: W/S keys (speed: 0.5)
      - Player 2: Up/Down arrows (speed: 0.5)
 
-4. **Visual Effects**
+4. **Ball Physics System** ✅ (`scripts/ball.gd`)
+   - RigidBody3D-based physics
+   - Perfect bounce physics material (bounce=1.0, friction=0.0)
+   - Auto-launch with random direction
+   - Speed increase on paddle hits (10% per hit)
+   - Collision cooldown to prevent rapid multi-hits
+   - Axis locking (Z-axis locked for 2D gameplay)
+   - Max speed clamping
+   - Ball reset functionality
+
+5. **Arena Walls** ✅ (`scripts/arena.gd`)
+   - Programmatic wall generation (top/bottom)
+   - StaticBody3D with collision shapes
+   - Physics material for perfect bounce
+   - Optional visual debugging meshes
+
+6. **Score System** ✅
+   - **Score Zones** (`scripts/score_zone.gd`): Area3D detection when ball passes paddles
+   - **Game Manager** (`scripts/game_manager.gd`): Score tracking, win conditions, ball reset
+   - Win condition (first to 5 points)
+   - Signal-based architecture
+
+7. **In-Game HUD** ✅ (`scripts/ui/game_hud.gd`)
+   - Live score display for both players
+   - Game over screen with winner announcement
+   - Restart button
+   - Main menu button
+
+8. **Visual Effects** ✅
    - Exhaust flame particle systems (GPUParticles3D)
    - Dynamic visibility based on movement direction
-
-5. **Planet/Ball** (`scripts/planet.gd`)
-   - Rotating mesh instance
-   - Basic animation implemented
+   - Ball rotation for visual effect
 
 ## Step-by-Step Development Guide
 
@@ -91,132 +124,93 @@ pong-3d/
 - Dynamic exhaust particles showing movement direction
 - Speed control via exported variables
 
-### Phase 4: Ball/Planet System (IN PROGRESS)
+### Phase 4: Ball/Planet System (COMPLETED ✅)
 
-**Current State:**
-- Basic rotating planet mesh exists
-- Needs physics implementation
+**Implementation:**
+- Converted to RigidBody3D for physics
+- Added perfect bounce physics material
+- Implemented auto-launch with guaranteed X velocity
+- Speed increase system on paddle hits
+- Collision cooldown to prevent multi-bouncing
+- Axis locking for 2D gameplay in 3D space
 
-**Next Steps:**
-1. Add RigidBody3D for physics
-2. Implement ball movement and velocity
-3. Add collision detection
-4. Implement bounce mechanics
-5. Set initial launch direction and speed
-6. Add ball reset on score
-
-**Implementation Guide:**
+**Key Code Pattern:**
 ```gdscript
 extends RigidBody3D
 
-var initial_velocity = Vector3(5, 0, 5)
-var max_speed = 10.0
-
 func _ready():
-    linear_velocity = initial_velocity
+    # Critical physics settings
+    gravity_scale = 0.0
+    linear_damp = 0.0  # Must be 0!
 
-func _physics_process(delta):
-    # Clamp speed
-    if linear_velocity.length() > max_speed:
-        linear_velocity = linear_velocity.normalized() * max_speed
+    # Perfect bounce material
+    var physics_material = PhysicsMaterial.new()
+    physics_material.bounce = 1.0
+    physics_material.friction = 0.0
+    physics_material_override = physics_material
+
+    # Unlock axes for movement
+    axis_lock_linear_x = false
+    axis_lock_linear_y = false
+    axis_lock_linear_z = true
 ```
 
-### Phase 5: Collision and Boundaries (TODO)
+### Phase 5: Collision and Boundaries (COMPLETED ✅)
 
-1. **Create Arena Walls**
-   - Top and bottom boundaries
-   - Invisible collision walls on sides for ball reset
+1. **Arena Walls** - Programmatically generated with StaticBody3D
+2. **Paddle Boundaries** - Movement clamped to configurable min/max Y positions
+3. **Collision Shapes** - Added to players via StaticBody3D children
+4. **Ball Collisions** - Detects paddles (via parent check) and walls
+5. **Score Zones** - Area3D behind each paddle
 
-2. **Paddle Boundaries**
-   - Limit player movement to arena bounds
-   - Add collision shapes to paddles
-
-3. **Ball Collisions**
-   - Paddle collision detection
-   - Wall bounces
-   - Score zones behind paddles
-
-**Implementation:**
+**Key Pattern:**
 ```gdscript
-# In player.gd _process function
+# Boundary clamping in player.gd
 func _process(_delta):
     var new_position = position
-
-    if Input.is_key_pressed(move_up_key):
-        new_position.y += speed
-    if Input.is_key_pressed(move_down_key):
-        new_position.y -= speed
-
-    # Clamp to boundaries
-    new_position.y = clamp(new_position.y, -10, 10)
+    # ... movement code ...
+    new_position.y = clamp(new_position.y, min_y_position, max_y_position)
     position = new_position
 ```
 
-### Phase 6: Game Logic and Scoring (TODO)
+### Phase 6: Game Logic and Scoring (COMPLETED ✅)
 
-1. **Score System**
-   - Create score manager script
-   - Track points for each player
-   - Display scores on UI
+**Implemented:**
+- Score zones using Area3D with `ball_entered_zone` signals
+- GameManager tracks scores and win conditions (first to 5)
+- Signal-based architecture for loose coupling
+- Ball reset on score with 2-second delay
+- Restart game functionality
 
-2. **Win Conditions**
-   - Set score limit (e.g., first to 5)
-   - Implement game over state
-   - Add restart functionality
-
-3. **Ball Reset**
-   - Reset to center on score
-   - Random launch direction
-   - Short countdown before launch
-
-**Example Score Manager:**
+**Architecture Pattern:**
 ```gdscript
-# scripts/game_manager.gd
-extends Node
-
-var player1_score = 0
-var player2_score = 0
-var win_score = 5
-
-signal score_changed(player, score)
-signal game_over(winner)
-
-func player_scored(player_num):
-    if player_num == 1:
-        player1_score += 1
-        score_changed.emit(1, player1_score)
-    else:
-        player2_score += 1
-        score_changed.emit(2, player2_score)
-
-    check_win_condition()
-
-func check_win_condition():
-    if player1_score >= win_score:
-        game_over.emit(1)
-    elif player2_score >= win_score:
-        game_over.emit(2)
+# Signal flow:
+ScoreZone.ball_entered_zone → GameManager._on_ball_scored()
+                            → GameManager.score_changed → HUD.update_scores()
+                            → GameManager.game_over → HUD.show_winner()
 ```
 
-### Phase 7: UI and HUD (TODO)
+### Phase 7: UI and HUD (COMPLETED ✅)
 
-1. **In-Game HUD**
-   - Score display for both players
-   - Game timer (optional)
-   - Pause menu
+**Implemented:**
+- CanvasLayer HUD with score labels
+- Game over panel with winner display
+- Restart and Main Menu buttons
+- Signal-connected to GameManager
 
-2. **UI Elements**
-   - Create score labels
-   - Add pause button
-   - Implement pause menu with Resume/Main Menu options
-
-**HUD Layout:**
+**Structure:**
 ```
-Player 1 Score    |    Player 2 Score
-       0          |          0
+HUD (CanvasLayer + game_hud.gd)
+├── Player1Score (Label)
+├── Player2Score (Label)
+└── GameOverPanel (Panel, initially hidden)
+    └── VBoxContainer
+        ├── WinnerLabel
+        ├── RestartButton
+        └── MainMenuButton
 ```
 
-### Phase 8: Polish and Effects (TODO)
+### Phase 8: Polish and Effects (PARTIALLY COMPLETED)
 
 1. **Visual Enhancements**
    - Add ball trail effect
@@ -267,6 +261,94 @@ Player 1 Score    |    Player 2 Score
    - Profile performance
    - Optimize particle effects
    - Reduce draw calls if needed
+
+## Critical Lessons Learned
+
+### Physics Material is Essential
+**Problem:** Ball was losing energy on every collision, speed decreasing over time.
+**Solution:** Create and apply `PhysicsMaterial` with `bounce = 1.0` and `friction = 0.0` to all physics bodies.
+
+```gdscript
+var physics_material = PhysicsMaterial.new()
+physics_material.bounce = 1.0  # Perfect elastic collision
+physics_material.friction = 0.0  # No energy loss
+physics_material_override = physics_material
+```
+
+**Apply to:** Ball (RigidBody3D), Walls (StaticBody3D), Paddles (StaticBody3D)
+
+### Linear Damp Must Be Zero
+**Problem:** Ball gradually slows down even without collisions.
+**Solution:** Set `linear_damp = 0.0` in script AND verify in Inspector it's set to 0 with "Replace" mode, not "Combine".
+
+**Critical:** Inspector settings can override script values!
+
+### Axis Locking for 2D in 3D
+**Problem:** Ball only moved up/down, not left/right toward paddles.
+**Solution:** Unlock X and Y axes, lock Z axis.
+
+```gdscript
+axis_lock_linear_x = false  # Allow left/right
+axis_lock_linear_y = false  # Allow up/down
+axis_lock_linear_z = true   # Lock to 2D plane
+```
+
+### Contact Monitor Required for Signals
+**Problem:** `body_entered` signal never fired, collisions not detected.
+**Solution:** Enable contact monitoring on RigidBody3D.
+
+```gdscript
+contact_monitor = true
+max_contacts_reported = 4
+body_entered.connect(_on_body_entered)
+```
+
+### Collision Detection with Nested Nodes
+**Problem:** Ball hits player's CollisionBody child, not Player node itself.
+**Solution:** Check if collision body's parent is a Player.
+
+```gdscript
+var player = body.get_parent() if body.get_parent() is Player else null
+```
+
+### Collision Cooldown Prevents Multi-Bouncing
+**Problem:** Ball bounces multiple times on same paddle rapidly.
+**Solution:** Track last collided body and add 0.2s cooldown timer.
+
+```gdscript
+var last_collision_body: Node = null
+var collision_cooldown: float = 0.0
+
+func _on_body_entered(body):
+    if collision_cooldown > 0 and last_collision_body == body:
+        return  # Ignore rapid re-collision
+    # ... handle collision ...
+    last_collision_body = body
+    collision_cooldown = 0.2
+```
+
+### Speed Increase Must Affect Entire Velocity Vector
+**Problem:** Only multiplying X component caused weird behavior.
+**Correct approach:**
+
+```gdscript
+# 1. Reverse direction
+linear_velocity.x = -linear_velocity.x
+
+# 2. Add bounce variation
+linear_velocity.y += bounce_angle
+
+# 3. Increase OVERALL speed (multiply whole vector)
+linear_velocity *= speed_increase_per_hit
+```
+
+### Signal-Based Architecture
+Using signals creates loose coupling between systems:
+- ScoreZone emits `ball_entered_zone(player_num)`
+- GameManager emits `score_changed(p1_score, p2_score)` and `game_over(winner)`
+- HUD listens and updates UI
+
+This allows changing UI without touching game logic.
 
 ## Key Godot Concepts Used
 
@@ -328,11 +410,26 @@ Player 1 Score    |    Player 2 Score
 
 ## Physics Configuration
 
-### Ball Physics
+### Ball (RigidBody3D) - CRITICAL SETTINGS
 - **Mass**: 1.0
 - **Gravity Scale**: 0 (no gravity in space pong)
-- **Linear Damp**: 0 (no friction)
-- **Bounce**: 1.0 (perfect elastic collision)
+- **Linear Damp**: 0 ⚠️ MUST BE ZERO (verify in Inspector: mode="Replace")
+- **Angular Damp**: 0
+- **Continuous CD**: true
+- **Contact Monitor**: true ⚠️ REQUIRED for collision signals
+- **Max Contacts Reported**: 4
+- **Physics Material**:
+  - **Bounce**: 1.0 ⚠️ CRITICAL (perfect elastic collision)
+  - **Friction**: 0.0 ⚠️ CRITICAL (no energy loss)
+- **Axis Lock**:
+  - Lock Linear X: false
+  - Lock Linear Y: false
+  - Lock Linear Z: true
+
+### Walls & Paddles (StaticBody3D)
+- **Physics Material**:
+  - **Bounce**: 1.0
+  - **Friction**: 0.0
 
 ### Collision Layers
 - Layer 1: Players
@@ -358,27 +455,107 @@ Player 1 Score    |    Player 2 Score
 
 ## Common Issues and Solutions
 
+### Issue: Ball speed decreases over time
+**Cause**: Linear damp > 0 OR missing/incorrect physics material
+**Solution**:
+1. Set `linear_damp = 0.0` in script
+2. Verify in Inspector: Linear Damp = 0, mode = "Replace"
+3. Apply physics material with bounce=1.0, friction=0.0
+4. Check Project Settings → Physics → 3D for default damp values
+
+### Issue: Ball only moves up/down, not sideways
+**Cause**: X axis is locked
+**Solution**:
+1. In Ball Inspector → Axis Lock Linear → Uncheck "Lock Linear X"
+2. Script sets `axis_lock_linear_x = false` but Inspector can override
+3. Verify Z axis IS locked (for 2D gameplay)
+
+### Issue: Collisions not detected / body_entered never fires
+**Cause**: Contact monitoring not enabled
+**Solution**:
+1. Set `contact_monitor = true` on RigidBody3D
+2. Set `max_contacts_reported = 4` (or higher)
+3. Connect signal: `body_entered.connect(_on_body_entered)`
+4. Enable Continuous CD for fast-moving objects
+
+### Issue: Ball detected as wall instead of hitting player
+**Cause**: Collision happens with CollisionBody child, not Player parent
+**Solution**: Check parent node type:
+```gdscript
+var player = body.get_parent() if body.get_parent() is Player else null
+```
+
+### Issue: Ball bounces multiple times on same paddle
+**Cause**: Ball stays in contact, triggers multiple collisions
+**Solution**: Add collision cooldown timer (0.2 seconds)
+
 ### Issue: Ball passes through paddle
-**Solution**: Ensure collision shapes match visual meshes and use Continuous Collision Detection (CCD) on the ball
+**Cause**: Missing collision shapes OR wrong collision layers
+**Solution**:
+1. Add StaticBody3D child to player with CollisionShape3D
+2. Enable Continuous CD on ball
+3. Verify collision layers/masks are correct
+4. Ensure physics material has bounce=1.0
 
-### Issue: Players move too fast
-**Solution**: Use `delta` time for frame-independent movement: `translate(Vector3(0, speed * delta, 0))`
+### Issue: Speed increase not working properly
+**Cause**: Only multiplying one velocity component
+**Solution**: Multiply entire velocity vector AFTER direction changes:
+```gdscript
+linear_velocity.x = -linear_velocity.x  # Reverse
+linear_velocity.y += bounce_angle       # Variation
+linear_velocity *= speed_increase_per_hit  # Increase ALL components
+```
 
-### Issue: Particle effects not showing
-**Solution**: Check GPUParticles3D is set to emitting, has proper material, and local_coords is configured
+## Future Enhancements
 
-### Issue: Scene won't load
-**Solution**: Verify file path uses `res://` protocol and check scene UID in project.godot
+### Gameplay
+1. **Difficulty Levels**
+   - Adjustable ball speed
+   - AI opponent option
+   - Variable paddle sizes
 
-## Next Immediate Steps
+2. **Power-ups** (optional)
+   - Speed boost
+   - Paddle size modifiers
+   - Multi-ball mode
 
-1. Convert planet.gd to use RigidBody3D for physics
-2. Add collision shapes to players
-3. Create arena walls with StaticBody3D
-4. Implement basic ball physics and movement
-5. Add score zones and detection
-6. Create game manager for score tracking
-7. Build in-game HUD
+3. **Game Modes**
+   - Best of 3/5/7 matches
+   - Time attack mode
+   - Practice mode vs AI
+
+### Polish
+1. **Audio**
+   - Ball bounce sound effects
+   - Paddle hit sounds
+   - Score/win sound effects
+   - Background music
+   - UI click sounds
+
+2. **Visual Effects**
+   - Ball trail particle effect
+   - Paddle hit impact particles
+   - Screen shake on collision
+   - Glow effect on score zones
+   - Winning player celebration animation
+
+3. **UI/UX**
+   - Pause menu (ESC key)
+   - Settings menu (volume, difficulty, key bindings)
+   - Match stats (longest rally, fastest ball speed)
+   - Countdown timer before ball launch
+   - Better game over screen animations
+
+### Technical
+1. **Save System**
+   - High scores persistence
+   - Player preferences
+   - Custom key bindings
+
+2. **Optimization**
+   - Object pooling for particles
+   - LOD for distant objects
+   - Performance profiling
 
 ## Resources and References
 
@@ -389,8 +566,28 @@ Player 1 Score    |    Player 2 Score
 
 ## Development Notes
 
-- Using Godot 4.5 with Forward+ renderer
-- Git plugin enabled for version control
-- Player movement currently uses `translate()` - consider switching to physics-based movement for better collision handling
-- Particle effects provide good visual feedback but may need optimization for performance
-- Consider adding delta time to movement for frame-rate independence
+- **Engine**: Godot 4.5 with Forward+ renderer
+- **Version Control**: Git plugin enabled
+- **Architecture**: Signal-based for loose coupling
+- **Physics**: RigidBody3D for ball, StaticBody3D for paddles/walls
+- **Movement**: Direct position manipulation (not physics-based) for precise control
+- **Particle Effects**: GPU-based (GPUParticles3D) for visual feedback
+
+## Quick Start Summary
+
+1. **Open** `scenes/game.tscn` in Godot 4.5
+2. **Follow** SETUP_GUIDE.md step-by-step
+3. **Critical**: Verify physics settings (Linear Damp=0, Contact Monitor=true, Physics Material applied)
+4. **Test**: Run game (F5) - ball should bounce and speed should increase
+5. **Debug**: If issues occur, check "Common Issues and Solutions" section above
+
+## Project Status
+
+**Core Gameplay**: ✅ Complete and functional
+**UI/Menus**: ✅ Complete (Main Menu + HUD)
+**Physics**: ✅ Fully implemented with proper energy conservation
+**Scoring**: ✅ Complete with win conditions
+**Polish**: ⚠️ Partial (has particle effects, needs audio and more VFX)
+
+**Ready to Play**: Yes!
+**Ready for Enhancements**: Yes!
