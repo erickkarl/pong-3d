@@ -23,7 +23,6 @@ const flareSFX = preload("res://assets/sfx/flareSFX.mp3")
 var top_exhaust: GPUParticles3D
 var bottom_exhaust: GPUParticles3D
 var flare_sound: AudioStreamPlayer3D
-var is_moving_state = false  # Track movement state for looping
 
 func _ready() -> void:
 	# Set up physics material for the collision body
@@ -53,15 +52,12 @@ func _ready() -> void:
 	flare_sound = AudioStreamPlayer3D.new()
 	add_child(flare_sound)
 	flare_sound.stream = flareSFX
-	# Connect finished signal to restart looping when moving
-	flare_sound.finished.connect(_on_flare_sound_finished)
+	
+	# Enable looping on the audio stream
+	if flare_sound.stream is AudioStreamMP3:
+		flare_sound.stream.loop = true
+	
 	flare_sound.volume_db = 0  # Adjust volume as needed
-
-
-func _on_flare_sound_finished() -> void:
-	# Restart the sound if we're still moving
-	if is_moving_state:
-		flare_sound.play()
 
 
 func _process(_delta: float) -> void:
@@ -82,10 +78,8 @@ func _process(_delta: float) -> void:
 	else:
 		top_exhaust.visible = false
 
-	# Update movement state
-	is_moving_state = is_moving
-
 	# Play or stop flare sound based on movement
+	# With loop enabled, the sound will automatically loop when playing
 	if is_moving:
 		if not flare_sound.playing:
 			flare_sound.play()
