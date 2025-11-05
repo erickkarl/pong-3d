@@ -6,9 +6,12 @@ class_name Ball
 @export var max_speed = 25.0
 @export var speed_increase_per_hit = 1.1
 
+const ballHitSFX = preload("res://assets/sfx/ballHitSFX.mp3")
+
 var game_manager: Node
 var last_collision_body: Node = null
 var collision_cooldown: float = 0.0
+var hit_sound: AudioStreamPlayer3D
 
 func _ready() -> void:
 	# Disable gravity
@@ -43,6 +46,12 @@ func _ready() -> void:
 	# Connect to game manager if it exists
 	game_manager = get_node_or_null("/root/Game/GameManager")
 
+	# Set up ball hit sound effect
+	hit_sound = AudioStreamPlayer3D.new()
+	add_child(hit_sound)
+	hit_sound.stream = ballHitSFX
+	hit_sound.volume_db = 0  # Adjust volume as needed
+
 	# Start the ball after a short delay
 	await get_tree().create_timer(1.0).timeout
 	launch_ball()
@@ -70,6 +79,9 @@ func _on_body_entered(body: Node) -> void:
 	# Prevent multiple rapid collisions with the same object
 	if collision_cooldown > 0 and last_collision_body == body:
 		return
+
+	# Play hit sound effect for any collision
+	hit_sound.play()
 
 	# Check if the body's parent is a Player (since we're hitting the CollisionBody child)
 	var player = null
