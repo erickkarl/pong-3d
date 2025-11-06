@@ -2,8 +2,13 @@ extends CanvasLayer
 
 class_name GameHUD
 
-@onready var player1_score_label = $ScoreContainer/Player1Score
-@onready var player2_score_label = $ScoreContainer/Player2Score
+# Health bar references
+@onready var player1_health_bar = $HealthContainer/Player1Container/HealthBar
+@onready var player2_health_bar = $HealthContainer/Player2Container/HealthBar
+@onready var player1_health_label = $HealthContainer/Player1Container/HealthLabel
+@onready var player2_health_label = $HealthContainer/Player2Container/HealthLabel
+
+# Game over panel references
 @onready var game_over_panel = $GameOverPanel
 @onready var winner_label = $GameOverPanel/VBoxContainer/WinnerLabel
 
@@ -22,17 +27,45 @@ func _ready() -> void:
 	if game_over_panel:
 		game_over_panel.visible = false
 
-	# Initialize health
+	# Initialize health bars
 	update_health(100, 100)
 
 func _on_health_changed(player1_health: int, player2_health: int) -> void:
 	update_health(player1_health, player2_health)
 
 func update_health(player1_health: int, player2_health: int) -> void:
-	if player1_score_label:
-		player1_score_label.text = str(player1_health)
-	if player2_score_label:
-		player2_score_label.text = str(player2_health)
+	# Update Player 1 health bar
+	if player1_health_bar:
+		player1_health_bar.value = player1_health
+		# Change color based on health level
+		update_health_bar_color(player1_health_bar, player1_health)
+
+	if player1_health_label:
+		player1_health_label.text = str(player1_health) + "%"
+
+	# Update Player 2 health bar
+	if player2_health_bar:
+		player2_health_bar.value = player2_health
+		# Change color based on health level
+		update_health_bar_color(player2_health_bar, player2_health)
+
+	if player2_health_label:
+		player2_health_label.text = str(player2_health) + "%"
+
+func update_health_bar_color(health_bar: ProgressBar, health: int) -> void:
+	# Get the style box for the progress bar
+	var stylebox = health_bar.get_theme_stylebox("fill")
+
+	# Change color based on health percentage
+	if health > 60:
+		# Green - healthy
+		stylebox.bg_color = Color(0.2, 0.8, 0.2, 1.0)
+	elif health > 30:
+		# Yellow/Orange - warning
+		stylebox.bg_color = Color(0.9, 0.7, 0.2, 1.0)
+	else:
+		# Red - critical
+		stylebox.bg_color = Color(0.9, 0.2, 0.2, 1.0)
 
 func _on_game_over(winner: int) -> void:
 	if game_over_panel:

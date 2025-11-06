@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://qmvuwaycrh23"]
+[gd_scene load_steps=21 format=3 uid="uid://qmvuwaycrh23"]
 
 [ext_resource type="Texture2D" uid="uid://dbw7j64akb0sh" path="res://assets/skybox/panorama_image.png" id="1_iywne"]
 [ext_resource type="PackedScene" uid="uid://2tuemeq172ed" path="res://assets/models/player1.glb" id="2_7jktm"]
@@ -36,6 +36,25 @@ radius = 1.5
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ca42v"]
 size = Vector3(2, 35, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kvpfn"]
+bg_color = Color(inf, inf, inf, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1560903500000, 1560903500000, 1560903500000, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dinhu"]
+bg_color = Color(0.2, 0.8, 0.43137255, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [node name="Game" type="Node3D"]
 
@@ -118,44 +137,6 @@ script = ExtResource("10_kvuet")
 [node name="HUD" type="CanvasLayer" parent="."]
 script = ExtResource("11_kvpfn")
 
-[node name="ScoreContainer" type="Control" parent="HUD"]
-layout_mode = 3
-anchors_preset = 10
-anchor_right = 1.0
-grow_horizontal = 2
-
-[node name="Player1Score" type="Label" parent="HUD/ScoreContainer"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.3
-anchor_top = 0.0
-anchor_right = 0.3
-anchor_bottom = 0.0
-offset_left = -40.0
-offset_top = 50.0
-offset_right = 40.0
-offset_bottom = 117.0
-grow_horizontal = 2
-theme_override_font_sizes/font_size = 48
-text = "0"
-horizontal_alignment = 1
-
-[node name="Player2Score" type="Label" parent="HUD/ScoreContainer"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.7
-anchor_top = 0.0
-anchor_right = 0.7
-anchor_bottom = 0.0
-offset_left = -40.0
-offset_top = 50.0
-offset_right = 40.0
-offset_bottom = 117.0
-grow_horizontal = 2
-theme_override_font_sizes/font_size = 48
-text = "0"
-horizontal_alignment = 1
-
 [node name="GameOverPanel" type="Panel" parent="HUD"]
 visible = false
 custom_minimum_size = Vector2(400, 200)
@@ -185,6 +166,61 @@ text = "Main Menu
 
 [node name="RestartButton" type="Button" parent="HUD/GameOverPanel/VBoxContainer"]
 layout_mode = 2
+
+[node name="HealthContainer" type="HBoxContainer" parent="HUD"]
+offset_left = 50.0
+offset_top = 20.0
+offset_right = 90.0
+offset_bottom = 60.0
+theme_override_constants/separation = 600
+
+[node name="Player1Container" type="VBoxContainer" parent="HUD/HealthContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Label" type="Label" parent="HUD/HealthContainer/Player1Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Player 1"
+horizontal_alignment = 1
+
+[node name="HealthBar" type="ProgressBar" parent="HUD/HealthContainer/Player1Container"]
+custom_minimum_size = Vector2(300, 30)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_kvpfn")
+theme_override_styles/fill = SubResource("StyleBoxFlat_dinhu")
+value = 100.0
+show_percentage = false
+
+[node name="HealthLabel" type="Label" parent="HUD/HealthContainer/Player1Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "100%"
+horizontal_alignment = 1
+
+[node name="Player2Container" type="VBoxContainer" parent="HUD/HealthContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Label" type="Label" parent="HUD/HealthContainer/Player2Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Player 2"
+horizontal_alignment = 1
+
+[node name="HealthBar" type="ProgressBar" parent="HUD/HealthContainer/Player2Container"]
+custom_minimum_size = Vector2(300, 30)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_kvpfn")
+theme_override_styles/fill = SubResource("StyleBoxFlat_dinhu")
+value = 100.0
+show_percentage = false
+
+[node name="HealthLabel" type="Label" parent="HUD/HealthContainer/Player2Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "100%"
+horizontal_alignment = 1
 
 [connection signal="body_entered" from="Ball" to="player1" method="_on_ball_body_entered"]
 [connection signal="pressed" from="HUD/GameOverPanel/VBoxContainer/MainMenuButton" to="HUD" method="_on_main_menu_button_pressed"]
