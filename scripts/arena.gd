@@ -3,7 +3,7 @@ extends Node3D
 class_name Arena
 
 @export var arena_width = 80.0
-@export var arena_height = 40.0
+@export var arena_height = 50.0
 @export var wall_thickness = 2.0
 
 func _ready() -> void:

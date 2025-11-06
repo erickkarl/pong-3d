@@ -2,49 +2,49 @@ extends Node
 
 class_name GameManager
 
-@export var win_score = 5
+@export var health_damage = 20
 
-var player1_score = 0
-var player2_score = 0
+var player1_health = 100
+var player2_health = 100
 
 var ball: Ball
 
-signal score_changed(player1_score: int, player2_score: int)
+signal health_changed(player1_health: int, player2_health: int)
 signal game_over(winner: int)
 
 func _ready() -> void:
 	# Find the ball in the scene
 	ball = get_node_or_null("../Ball")
-	print("GameManager: Ball reference: ", ball)
 
 	# Connect to score zones
 	var score_zones = get_tree().get_nodes_in_group("score_zones")
-	print("GameManager: Found ", score_zones.size(), " score zones")
+
 	for zone in score_zones:
 		if zone.has_signal("ball_entered_zone"):
 			zone.ball_entered_zone.connect(_on_ball_scored)
-			print("GameManager: Connected to score zone: ", zone.name)
 
 func _on_ball_scored(player_number: int) -> void:
-	print("GameManager: _on_ball_scored called! Player: ", player_number)
-
-	# Increment the score for the player who scored
+	# When a player scores, reduce the opponent's health
+	# If player 1 scores, player 2 loses health
+	# If player 2 scores, player 1 loses health
 	if player_number == 1:
-		player1_score += 1
+		player2_health -= health_damage
 	elif player_number == 2:
-		player2_score += 1
+		player1_health -= health_damage
+		
+	# Ensure health doesn't go below 0
+	player1_health = max(0, player1_health)
+	player2_health = max(0, player2_health)
+		
+	# Emit health changed signal
+	health_changed.emit(player1_health, player2_health)
 
-	print("GameManager: New scores - P1: ", player1_score, " P2: ", player2_score)
-
-	# Emit score changed signal
-	score_changed.emit(player1_score, player2_score)
-
-	# Check for win condition
-	if player1_score >= win_score:
-		game_over.emit(1)
+	# Check for win condition (health reaches 0 or below)
+	if player1_health <= 0:
+		game_over.emit(2)  # Player 2 wins
 		return
-	elif player2_score >= win_score:
-		game_over.emit(2)
+	elif player2_health <= 0:
+		game_over.emit(1)  # Player 1 wins
 		return
 
 	# Reset the ball
@@ -52,9 +52,9 @@ func _on_ball_scored(player_number: int) -> void:
 		ball.reset_ball()
 
 func reset_game() -> void:
-	player1_score = 0
-	player2_score = 0
-	score_changed.emit(player1_score, player2_score)
+	player1_health = 100
+	player2_health = 100
+	health_changed.emit(player1_health, player2_health)
 
 	if ball:
 		ball.reset_ball()

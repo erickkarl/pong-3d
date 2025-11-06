@@ -72,11 +72,8 @@ func _physics_process(_delta: float) -> void:
 	rotate(Vector3(0, 1, 0), rotation_speed * _delta * PI)
 
 func _on_body_entered(body: Node) -> void:
-	print("Ball: Collision with ", body.name, " (type: ", body.get_class(), ") - Current speed: ", linear_velocity.length())
-
 	# Prevent multiple rapid collisions with the same object
 	if collision_cooldown > 0 and last_collision_body == body:
-		print("Ball: Collision ignored (cooldown active)")
 		return
 
 	# Play hit sound effect for any collision
@@ -86,32 +83,28 @@ func _on_body_entered(body: Node) -> void:
 	var player = null
 	if body.get_parent() and body.get_parent() is Player:
 		player = body.get_parent()
-		print("Ball: Detected player via parent: ", player.name)
 
 	# Or check if the body itself is a Player
 	if body is Player:
 		player = body
-		print("Ball: Detected player directly: ", player.name)
 
 	# Check for player collision FIRST (before checking for StaticBody3D)
 	if player:
 		# Get current speed before any modifications
 		var current_speed = linear_velocity.length()
-		print("Ball: Hit player! Speed before: ", current_speed)
 
 		# Reverse X direction
 		linear_velocity.x = - linear_velocity.x
 
 		# Add some variation based on where it hit the paddle
 		var hit_position = position.y - player.position.y
+		print(hit_position)
 		var bounce_angle = hit_position * 0.3 # Adjust angle based on hit position
 		linear_velocity.y += bounce_angle
 
 		# Increase speed and normalize direction
 		var new_speed = current_speed * speed_increase_per_hit
 		linear_velocity = linear_velocity.normalized() * new_speed
-
-		print("Ball: Speed after: ", linear_velocity.length(), " (target: ", new_speed, ")")
 
 		# Set cooldown to prevent multiple rapid hits
 		last_collision_body = body
@@ -120,7 +113,6 @@ func _on_body_entered(body: Node) -> void:
 
 	# Check if it's a wall (StaticBody3D that's not a player's CollisionBody)
 	if body is StaticBody3D and body.name == "ArenaWalls":
-		print("Ball: Hit wall - NO speed increase, just bouncing")
 		# Reverse Y direction (top/bottom walls)
 		linear_velocity.y = - linear_velocity.y
 
@@ -128,9 +120,6 @@ func _on_body_entered(body: Node) -> void:
 		last_collision_body = body
 		collision_cooldown = 0.1 # 100ms cooldown for walls
 		return
-
-	# If we get here, we hit something unexpected
-	print("Ball: WARNING - Hit unhandled object: ", body.name, " (", body.get_class(), ")")
 
 func reset_ball() -> void:
 	# Reset position and velocity

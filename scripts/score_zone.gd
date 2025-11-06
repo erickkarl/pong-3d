@@ -14,11 +14,6 @@ func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 
 func _on_body_entered(body: Node3D) -> void:
-	print("ScoreZone: Body entered: ", body.name, " Type: ", body.get_class())
-
 	# Check if it's the ball
 	if body is Ball:
-		print("ScoreZone: Ball detected! Emitting signal for player ", player_number)
 		ball_entered_zone.emit(player_number)
-	else:
-		print("ScoreZone: Not a ball, it's a: ", body.get_class())
