@@ -3,7 +3,6 @@ extends RigidBody3D
 class_name Ball
 
 @export var initial_speed = 15.0
-@export var speed_increase_per_hit = 2
 
 const ballHitSFX = preload("res://assets/sfx/ballHitSFX.mp3")
 
@@ -39,9 +38,6 @@ func _ready() -> void:
 	axis_lock_linear_y = false
 	axis_lock_linear_z = true # Lock Z since we're playing in 2D plane
 
-	# Connect the collision signal
-	body_entered.connect(_on_body_entered)
-
 	# Connect to game manager if it exists
 	game_manager = get_node_or_null("/root/Game/GameManager")
 
@@ -71,54 +67,20 @@ func _physics_process(_delta: float) -> void:
 	var rotation_speed = 0.1 * (linear_velocity.length() / initial_speed)
 	rotate(Vector3(0, 1, 0), rotation_speed * _delta * PI)
 
-func _on_body_entered(body: Node) -> void:
-	# Prevent multiple rapid collisions with the same object
-	if collision_cooldown > 0 and last_collision_body == body:
-		return
+# Check if this collision should be processed (cooldown check)
+func can_process_collision(collider: Node) -> bool:
+	if collision_cooldown > 0 and last_collision_body == collider:
+		return false
+	return true
 
-	# Play hit sound effect for any collision
+# Set collision cooldown and last collision body
+func set_collision_cooldown(collider: Node, cooldown_time: float) -> void:
+	last_collision_body = collider
+	collision_cooldown = cooldown_time
+
+# Play hit sound
+func play_hit_sound() -> void:
 	hit_sound.play()
-
-	# Check if the body's parent is a Player (since we're hitting the CollisionBody child)
-	var player = null
-	if body.get_parent() and body.get_parent() is Player:
-		player = body.get_parent()
-
-	# Or check if the body itself is a Player
-	if body is Player:
-		player = body
-
-	# Check for player collision FIRST (before checking for StaticBody3D)
-	if player:
-		# Get current speed before any modifications
-		var current_speed = linear_velocity.length()
-
-		# Reverse X direction
-		linear_velocity.x = - linear_velocity.x
-
-		# Add some variation based on where it hit the paddle
-		var hit_position = position.y - player.position.y
-		var bounce_angle = hit_position * PI # Adjust angle based on hit position
-		linear_velocity.y += bounce_angle
-
-		# Increase speed and normalize direction
-		var new_speed = current_speed * speed_increase_per_hit
-		linear_velocity = linear_velocity.normalized() * new_speed
-
-		# Set cooldown to prevent multiple rapid hits
-		last_collision_body = body
-		collision_cooldown = 0.2 # 200ms cooldown
-		return
-
-	# Check if it's a wall (StaticBody3D that's not a player's CollisionBody)
-	if body is StaticBody3D and body.name == "ArenaWalls":
-		# Reverse Y direction (top/bottom walls)
-		linear_velocity.y = - linear_velocity.y
-
-		# Set cooldown to prevent multiple rapid hits
-		last_collision_body = body
-		collision_cooldown = 0.1 # 100ms cooldown for walls
-		return
 
 func reset_ball() -> void:
 	# Reset position and velocity
