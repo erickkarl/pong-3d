@@ -3,7 +3,7 @@ extends Node3D
 class_name Arena
 
 @export var arena_width = 80.0
-@export var arena_height = 32.0
+@export var arena_height = 40.0
 @export var wall_thickness = 2.0
 
 func _ready() -> void:
@@ -29,8 +29,8 @@ func create_wall(pos: Vector3, size: Vector3) -> void:
 
 	# Create physics material for perfect bounce
 	var physics_material = PhysicsMaterial.new()
-	physics_material.bounce = 1.0  # Perfect bounce
-	physics_material.friction = 0.0  # No friction
+	physics_material.bounce = 1.0 # Perfect bounce
+	physics_material.friction = 0.0 # No friction
 	wall.physics_material_override = physics_material
 
 	var collision_shape = CollisionShape3D.new()
