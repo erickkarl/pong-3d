@@ -98,8 +98,7 @@ func _on_body_entered(body: Node) -> void:
 
 		# Add some variation based on where it hit the paddle
 		var hit_position = position.y - player.position.y
-		print(hit_position)
-		var bounce_angle = hit_position * 0.3 # Adjust angle based on hit position
+		var bounce_angle = hit_position * PI # Adjust angle based on hit position
 		linear_velocity.y += bounce_angle
 
 		# Increase speed and normalize direction

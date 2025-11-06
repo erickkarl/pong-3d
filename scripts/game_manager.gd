@@ -25,8 +25,6 @@ func _ready() -> void:
 
 func _on_ball_scored(player_number: int) -> void:
 	# When a player scores, reduce the opponent's health
-	# If player 1 scores, player 2 loses health
-	# If player 2 scores, player 1 loses health
 	if player_number == 1:
 		player2_health -= health_damage
 	elif player_number == 2:

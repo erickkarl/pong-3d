@@ -35,7 +35,7 @@ bounce = 1.0
 radius = 1.5
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ca42v"]
-size = Vector3(2, 35, 5)
+size = Vector3(2, 300, 5)
 
 [node name="Game" type="Node3D"]
 
@@ -70,9 +70,9 @@ shape = SubResource("BoxShape3D_trtic")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.34384155, 16.743101, 26.124678)
-light_energy = 11.392
-light_indirect_energy = 2.979
-omni_range = 194.104
+light_energy = 12.547
+light_indirect_energy = 3.969
+omni_range = 498.521
 
 [node name="Ball" type="RigidBody3D" parent="."]
 collision_layer = 2
@@ -128,9 +128,7 @@ grow_horizontal = 2
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.3
-anchor_top = 0.0
 anchor_right = 0.3
-anchor_bottom = 0.0
 offset_left = -40.0
 offset_top = 50.0
 offset_right = 40.0
@@ -144,9 +142,7 @@ horizontal_alignment = 1
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.7
-anchor_top = 0.0
 anchor_right = 0.7
-anchor_bottom = 0.0
 offset_left = -40.0
 offset_top = 50.0
 offset_right = 40.0
