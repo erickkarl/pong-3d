@@ -7,6 +7,8 @@ class_name Arena
 @export var wall_thickness = 2.0
 
 func _ready() -> void:
+	# Add to group so players can find it
+	add_to_group("arena")
 	create_walls()
 
 func create_walls() -> void:
@@ -53,5 +55,46 @@ func create_wall(pos: Vector3, size: Vector3) -> void:
 	mesh_instance.material_override = material
 
 	wall.add_child(mesh_instance)
+	
+	# Set up Area3D to detect ball collisions
+	setup_wall_collision_detection(wall, collision_shape)
 
 	add_child(wall)
+
+func setup_wall_collision_detection(wall: StaticBody3D, collision_shape_node: CollisionShape3D) -> void:
+	# Create Area3D to detect when ball enters
+	var area = Area3D.new()
+	area.name = "BallDetectionArea"
+	wall.add_child(area)
+	
+	# Copy the collision shape
+	var shape = collision_shape_node.shape
+	if shape:
+		var area_shape = CollisionShape3D.new()
+		area_shape.shape = shape
+		area.add_child(area_shape)
+	
+	# Connect to detect ball
+	area.body_entered.connect(_on_wall_ball_entered.bind(wall))
+	
+	# Set collision layer/mask to detect ball
+	area.collision_layer = 0
+	area.collision_mask = 2  # Layer 2 is the ball
+
+func _on_wall_ball_entered(body: Node3D, wall: StaticBody3D) -> void:
+	if body is Ball:
+		handle_ball_collision(body, wall)
+
+func handle_ball_collision(ball: Ball, wall: StaticBody3D) -> void:
+	# Check if collision should be processed
+	if not ball.can_process_collision(wall):
+		return
+
+	# Play hit sound effect
+	ball.play_hit_sound()
+
+	# Reverse Y direction (top/bottom walls)
+	ball.linear_velocity.y = - ball.linear_velocity.y
+
+	# Set cooldown to prevent multiple rapid hits
+	ball.set_collision_cooldown(wall, 0.1)  # 100ms cooldown for walls

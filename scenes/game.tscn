@@ -35,7 +35,7 @@ bounce = 1.0
 radius = 1.5
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ca42v"]
-size = Vector3(2, 35, 5)
+size = Vector3(2, 300, 5)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kvpfn"]
 bg_color = Color(inf, inf, inf, 1)
@@ -89,9 +89,9 @@ shape = SubResource("BoxShape3D_trtic")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.34384155, 16.743101, 26.124678)
-light_energy = 11.392
-light_indirect_energy = 2.979
-omni_range = 194.104
+light_energy = 12.547
+light_indirect_energy = 3.969
+omni_range = 498.521
 
 [node name="Ball" type="RigidBody3D" parent="."]
 collision_layer = 2
