@@ -3,10 +3,8 @@ extends CanvasLayer
 class_name GameHUD
 
 # Health bar references
-@onready var player1_health_bar = $HealthContainer/Player1Container/HealthBar
-@onready var player2_health_bar = $HealthContainer/Player2Container/HealthBar
-@onready var player1_health_label = $HealthContainer/Player1Container/HealthLabel
-@onready var player2_health_label = $HealthContainer/Player2Container/HealthLabel
+@onready var player1_health_bar = $HealthBarContainer/Player1Container/HealthBar
+@onready var player2_health_bar = $HealthBarContainer/Player2Container/HealthBar
 
 # Game over panel references
 @onready var game_over_panel = $GameOverPanel
@@ -40,17 +38,11 @@ func update_health(player1_health: int, player2_health: int) -> void:
 		# Change color based on health level
 		update_health_bar_color(player1_health_bar, player1_health)
 
-	if player1_health_label:
-		player1_health_label.text = str(player1_health) + "%"
-
 	# Update Player 2 health bar
 	if player2_health_bar:
 		player2_health_bar.value = player2_health
 		# Change color based on health level
 		update_health_bar_color(player2_health_bar, player2_health)
-
-	if player2_health_label:
-		player2_health_label.text = str(player2_health) + "%"
 
 func update_health_bar_color(health_bar: ProgressBar, health: int) -> void:
 	# Get the style box for the progress bar
