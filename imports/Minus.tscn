@@ -1,0 +1,56 @@
+[gd_scene load_steps=10 format=3 uid="uid://dkp4ytbtdrsml"]
+
+[ext_resource type="ArrayMesh" uid="uid://1kc2hfgi8jay" path="res://minusModel.obj" id="1_wu4e2"]
+[ext_resource type="Texture2D" uid="uid://ddj3fsk641thn" path="res://circulotext.png" id="2_5lhvo"]
+[ext_resource type="ArrayMesh" uid="uid://bddnrkovfrc6e" path="res://circulomodel.obj" id="3_mt3pj"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a0tk4"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+vertex_color_is_srgb = true
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_i5arm"]
+orbit_velocity_min = 0.6450001
+orbit_velocity_max = 0.6450001
+gravity = Vector3(0, 0, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3okr7"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+albedo_color = Color(1, 0, 0, 1)
+albedo_texture = ExtResource("2_5lhvo")
+albedo_texture_force_srgb = true
+
+[sub_resource type="Curve" id="Curve_ctexd"]
+_data = [Vector2(0.025236592, 0), 0.0, 4.6897945, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_3478u"]
+curve = SubResource("Curve_ctexd")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_lrsrh"]
+angular_velocity_min = -1.6093254e-05
+angular_velocity_max = -1.6093254e-05
+gravity = Vector3(0, 0, 0)
+scale_min = 1.3
+scale_max = 1.5
+scale_curve = SubResource("CurveTexture_3478u")
+
+[node name="Node3D" type="Node3D"]
+
+[node name="minus" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("StandardMaterial3D_a0tk4")
+process_material = SubResource("ParticleProcessMaterial_i5arm")
+draw_pass_1 = ExtResource("1_wu4e2")
+
+[node name="circulo" type="GPUParticles3D" parent="."]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 1, 0)
+material_override = SubResource("StandardMaterial3D_3okr7")
+amount = 1
+process_material = SubResource("ParticleProcessMaterial_lrsrh")
+draw_pass_1 = ExtResource("3_mt3pj")
