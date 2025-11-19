@@ -212,3 +212,13 @@ particle.visible = false  # Toggle visibility, not emitting
 
 **Player 1:** W/S
 **Player 2:** Up/Down arrows
+
+## Todo
+
+- [ ] Spawn power-ups mechanic
+- [ ] Heal (power-up)
+- [ ] Duplicate balls (power-up)
+- [ ] Fix bug ball flickering
+- [ ] Refactor need of collision cooldown
+- [ ] Create pause menu (config, return to main screen, resolution and volume)
+- [ ] Create play again screen
