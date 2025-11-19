@@ -11,7 +11,7 @@
 [ext_resource type="Script" uid="uid://c20fqd0lb711x" path="res://scripts/score_zone.gd" id="9_dinhu"]
 [ext_resource type="Script" uid="uid://c1w5scqm513ae" path="res://scripts/game_manager.gd" id="10_kvuet"]
 [ext_resource type="Script" uid="uid://hyjen7kruwy1" path="res://scripts/ui/game_hud.gd" id="11_kvpfn"]
-[ext_resource type="AudioStreamMP3" uid="uid://k3b3ufwnuwo" path="res://assets/sounds/bgtheme.mp3" id="12_bgtheme"]
+[ext_resource type="AudioStream" uid="uid://k3b3ufwnuwo" path="res://assets/sounds/bgtheme.mp3" id="12_bgtheme"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_p57ef"]
 panorama = ExtResource("1_iywne")
@@ -89,8 +89,8 @@ collision_mask = 2
 shape = SubResource("BoxShape3D_trtic")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.34384155, 16.743101, 26.124678)
-light_energy = 12.547
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.34384155, 0.71149635, 6.482836)
+light_energy = 16.0
 light_indirect_energy = 3.969
 omni_range = 498.521
 
@@ -137,8 +137,8 @@ script = ExtResource("10_kvuet")
 
 [node name="BackgroundMusic" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("12_bgtheme")
-autoplay = true
 volume_db = -25.0
+autoplay = true
 
 [node name="HUD" type="CanvasLayer" parent="."]
 script = ExtResource("11_kvpfn")
@@ -174,7 +174,6 @@ text = "Main Menu
 layout_mode = 2
 
 [node name="HealthBarContainer" type="HBoxContainer" parent="HUD"]
-layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
