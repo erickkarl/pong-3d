@@ -1,14 +1,27 @@
 extends CanvasLayer
+## HUD overlay showing player health and game over state.
+##
+## Displays health bars for both players and shows a game over panel
+## when one player wins.
 
 class_name GameHUD
 
+
+# ============================================================================
+# ONREADY REFERENCES
+# ============================================================================
+
 # Health bar references
-@onready var player1_health_bar = $HealthBarContainer/Player1Container/HealthBar
-@onready var player2_health_bar = $HealthBarContainer/Player2Container/HealthBar
+@onready var player1_health_bar: ProgressBar = $HealthBarContainer/Player1Container/HealthBar
+@onready var player2_health_bar: ProgressBar = $HealthBarContainer/Player2Container/HealthBar
 
 # Game over panel references
-@onready var game_over_panel = $GameOverPanel
-@onready var winner_label = $GameOverPanel/VBoxContainer/WinnerLabel
+@onready var game_over_panel: Panel = $GameOverPanel
+@onready var winner_label: Label = $GameOverPanel/VBoxContainer/WinnerLabel
+
+# ============================================================================
+# STATE
+# ============================================================================
 
 var game_manager: GameManager
 
@@ -26,7 +39,7 @@ func _ready() -> void:
 		game_over_panel.visible = false
 
 	# Initialize health bars
-	update_health(100, 100)
+	update_health(GameConstants.INITIAL_HEALTH, GameConstants.INITIAL_HEALTH)
 
 func _on_health_changed(player1_health: int, player2_health: int) -> void:
 	update_health(player1_health, player2_health)
@@ -46,18 +59,22 @@ func update_health(player1_health: int, player2_health: int) -> void:
 
 func update_health_bar_color(health_bar: ProgressBar, health: int) -> void:
 	# Get the style box for the progress bar
-	var stylebox = health_bar.get_theme_stylebox("fill")
+	var stylebox: StyleBox = health_bar.get_theme_stylebox("fill")
+	if not stylebox is StyleBoxFlat:
+		return
 
-	# Change color based on health percentage
-	if health > 60:
+	var style := stylebox as StyleBoxFlat
+
+	# Change color based on health percentage using constants
+	if health > GameConstants.HEALTH_THRESHOLD_HEALTHY:
 		# Green - healthy
-		stylebox.bg_color = Color(0.2, 0.8, 0.2, 1.0)
-	elif health > 30:
+		style.bg_color = GameConstants.HEALTH_COLOR_HEALTHY
+	elif health > GameConstants.HEALTH_THRESHOLD_WARNING:
 		# Yellow/Orange - warning
-		stylebox.bg_color = Color(0.9, 0.7, 0.2, 1.0)
+		style.bg_color = GameConstants.HEALTH_COLOR_WARNING
 	else:
 		# Red - critical
-		stylebox.bg_color = Color(0.9, 0.2, 0.2, 1.0)
+		style.bg_color = GameConstants.HEALTH_COLOR_CRITICAL
 
 func _on_game_over(winner: int) -> void:
 	if game_over_panel:
@@ -66,20 +83,12 @@ func _on_game_over(winner: int) -> void:
 	if winner_label:
 		winner_label.text = "Player " + str(winner) + " Wins!"
 
-func _on_restart_pressed() -> void:
+func _on_main_menu_button_pressed() -> void:
+	SceneManager.load_main_menu()
+
+func _on_restart_button_pressed() -> void:
 	if game_manager:
 		game_manager.reset_game()
 
 	if game_over_panel:
 		game_over_panel.visible = false
-
-func _on_main_menu_pressed() -> void:
-	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
-
-
-func _on_main_menu_button_pressed() -> void:
-	_on_main_menu_pressed()
-
-
-func _on_restart_button_pressed() -> void:
-	_on_restart_pressed()

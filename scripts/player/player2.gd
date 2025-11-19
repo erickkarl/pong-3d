@@ -1,8 +1,7 @@
-extends "res://scripts/player/player.gd"
+extends "res://scripts/player/player_controller.gd"
 
 func _ready() -> void:
-	super._ready()
 	move_up_key = KEY_UP
 	move_down_key = KEY_DOWN
-	
-	speed = 0.5
+	speed = GameConstants.PLAYER_MOVEMENT_SPEED
+	super._ready()

@@ -1,10 +1,21 @@
 extends Area3D
+## Score detection zone for tracking when the ball passes a player.
+##
+## When the ball enters this zone, it signals that the opposing player has scored.
 
 class_name ScoreZone
 
-@export var player_number = 1  # Which player scores when ball enters this zone
+# ============================================================================
+# EXPORTS
+# ============================================================================
 
-signal ball_entered_zone(player_number)
+@export var player_number: int = 1  # Which player scores when ball enters this zone
+
+# ============================================================================
+# SIGNALS
+# ============================================================================
+
+signal ball_entered_zone(player_number: int)
 
 func _ready() -> void:
 	# Enable monitoring to detect bodies entering this area

@@ -1,12 +1,27 @@
 extends RigidBody3D
+## The ball in the Pong 3D game.
+##
+## Handles ball physics, collision detection, launching, and resetting.
+## Uses perfect bounce physics to maintain constant energy throughout the game.
 
 class_name Ball
 
-@export var initial_speed = 15.0
+# ============================================================================
+# EXPORTS
+# ============================================================================
 
-const ballHitSFX = preload("res://assets/sfx/ballHitSFX.mp3")
+@export var initial_speed: float = 15.0
 
-var game_manager: Node
+# ============================================================================
+# CONSTANTS
+# ============================================================================
+
+const BALL_HIT_SFX := preload("res://assets/sfx/ballHitSFX.mp3")
+
+# ============================================================================
+# STATE
+# ============================================================================
+
 var last_collision_body: Node = null
 var collision_cooldown: float = 0.0
 var hit_sound: AudioStreamPlayer3D
@@ -21,10 +36,7 @@ func _ready() -> void:
 	angular_damp = 0.0
 
 	# Create physics material for perfect bounce - CRITICAL for preserving energy
-	var physics_material = PhysicsMaterial.new()
-	physics_material.bounce = 1.0 # Perfect bounce - no energy loss
-	physics_material.friction = 0.0 # No friction
-	physics_material_override = physics_material
+	physics_material_override = PhysicsUtils.create_bouncy_material()
 
 	# Make sure continuous collision detection is enabled
 	continuous_cd = true
@@ -38,34 +50,31 @@ func _ready() -> void:
 	axis_lock_linear_y = false
 	axis_lock_linear_z = true # Lock Z since we're playing in 2D plane
 
-	# Connect to game manager if it exists
-	game_manager = get_node_or_null("/root/Game/GameManager")
-
 	# Set up ball hit sound effect
 	hit_sound = AudioStreamPlayer3D.new()
 	add_child(hit_sound)
-	hit_sound.stream = ballHitSFX
-	hit_sound.volume_db = 0 # Adjust volume as needed
+	hit_sound.stream = BALL_HIT_SFX
+	hit_sound.volume_db = 0
 
 	# Start the ball after a short delay
-	await get_tree().create_timer(1.0).timeout
+	await get_tree().create_timer(GameConstants.BALL_LAUNCH_DELAY).timeout
 	launch_ball()
 
 func launch_ball() -> void:
 	# Random direction (left or right) - ensure X velocity is never zero
-	var x_direction = 1.0 if randf() > 0.5 else -1.0 # Always go left or right
-	var y_direction = randf_range(-0.5, 0.5)
-	var direction = Vector3(x_direction, y_direction, 0).normalized()
+	var x_direction: float = 1.0 if randf() > 0.5 else -1.0
+	var y_direction: float = randf_range(-0.5, 0.5)
+	var direction: Vector3 = Vector3(x_direction, y_direction, 0).normalized()
 	linear_velocity = direction * initial_speed
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	# Update collision cooldown
 	if collision_cooldown > 0:
-		collision_cooldown -= _delta
+		collision_cooldown -= delta
 
 	# Keep rotation for visual effect (speed up rotation with ball speed)
-	var rotation_speed = 0.1 * (linear_velocity.length() / initial_speed)
-	rotate(Vector3(0, 1, 0), rotation_speed * _delta * PI)
+	var rotation_speed: float = GameConstants.BALL_ROTATION_SPEED * (linear_velocity.length() / initial_speed)
+	rotate(Vector3(0, 1, 0), rotation_speed * delta * PI)
 
 # Check if this collision should be processed (cooldown check)
 func can_process_collision(collider: Node) -> bool:
@@ -89,5 +98,5 @@ func reset_ball() -> void:
 	angular_velocity = Vector3.ZERO
 
 	# Launch again after a short delay
-	await get_tree().create_timer(2.0).timeout
+	await get_tree().create_timer(GameConstants.BALL_RESET_DELAY).timeout
 	launch_ball()

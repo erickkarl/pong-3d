@@ -1,13 +1,29 @@
 extends Node
+## Manages game state, scoring, and win conditions.
+##
+## Tracks player health, handles scoring events, and determines
+## when a player wins the game.
 
 class_name GameManager
 
-@export var health_damage = 20
+# ============================================================================
+# EXPORTS
+# ============================================================================
 
-var player1_health = 100
-var player2_health = 100
+@export var health_damage: int = GameConstants.HEALTH_DAMAGE_PER_SCORE
+
+# ============================================================================
+# STATE
+# ============================================================================
+
+var player1_health: int = GameConstants.INITIAL_HEALTH
+var player2_health: int = GameConstants.INITIAL_HEALTH
 
 var ball: Ball
+
+# ============================================================================
+# SIGNALS
+# ============================================================================
 
 signal health_changed(player1_health: int, player2_health: int)
 signal game_over(winner: int)
@@ -17,9 +33,9 @@ func _ready() -> void:
 	ball = get_node_or_null("../Ball")
 
 	# Connect to score zones
-	var score_zones = get_tree().get_nodes_in_group("score_zones")
+	var score_zones: Array[Node] = get_tree().get_nodes_in_group("score_zones")
 
-	for zone in score_zones:
+	for zone: Node in score_zones:
 		if zone.has_signal("ball_entered_zone"):
 			zone.ball_entered_zone.connect(_on_ball_scored)
 
@@ -30,9 +46,9 @@ func _on_ball_scored(player_number: int) -> void:
 	elif player_number == 2:
 		player1_health -= health_damage
 		
-	# Ensure health doesn't go below 0
-	player1_health = max(0, player1_health)
-	player2_health = max(0, player2_health)
+	# Ensure health doesn't go below minimum
+	player1_health = max(GameConstants.MIN_HEALTH, player1_health)
+	player2_health = max(GameConstants.MIN_HEALTH, player2_health)
 		
 	# Emit health changed signal
 	health_changed.emit(player1_health, player2_health)
@@ -50,8 +66,8 @@ func _on_ball_scored(player_number: int) -> void:
 		ball.reset_ball()
 
 func reset_game() -> void:
-	player1_health = 100
-	player2_health = 100
+	player1_health = GameConstants.INITIAL_HEALTH
+	player2_health = GameConstants.INITIAL_HEALTH
 	health_changed.emit(player1_health, player2_health)
 
 	if ball:
