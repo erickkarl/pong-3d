@@ -1,5 +1,18 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+*.import
+.mono/
+mono_crash.*.json
 
+# IDE specific
 .vscode/
+.idea/
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Build outputs
+export/
+export_presets.cfg

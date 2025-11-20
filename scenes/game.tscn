@@ -1,11 +1,17 @@
-[gd_scene load_steps=11 format=3 uid="uid://qmvuwaycrh23"]
+[gd_scene load_steps=22 format=3 uid="uid://qmvuwaycrh23"]
 
 [ext_resource type="Texture2D" uid="uid://dbw7j64akb0sh" path="res://assets/skybox/panorama_image.png" id="1_iywne"]
 [ext_resource type="PackedScene" uid="uid://2tuemeq172ed" path="res://assets/models/player1.glb" id="2_7jktm"]
 [ext_resource type="Script" uid="uid://datsunqwlf03j" path="res://scripts/player/player1.gd" id="2_fc0e3"]
 [ext_resource type="PackedScene" uid="uid://dgox0bxfmhs5x" path="res://assets/models/player2.glb" id="3_ryrav"]
 [ext_resource type="Script" uid="uid://dvjqtmjrk8g11" path="res://scripts/player/player2.gd" id="4_fc0e3"]
+[ext_resource type="Script" uid="uid://cmwj55qit03v1" path="res://scripts/arena.gd" id="4_vtaks"]
 [ext_resource type="PackedScene" uid="uid://bop44w6ja8tn6" path="res://assets/models/ballPrl.glb" id="6_p57ef"]
+[ext_resource type="Script" uid="uid://dq0p21oumnj8n" path="res://scripts/ball.gd" id="7_kvpfn"]
+[ext_resource type="Script" uid="uid://c20fqd0lb711x" path="res://scripts/score_zone.gd" id="9_dinhu"]
+[ext_resource type="Script" uid="uid://c1w5scqm513ae" path="res://scripts/game_manager.gd" id="10_kvuet"]
+[ext_resource type="Script" uid="uid://hyjen7kruwy1" path="res://scripts/ui/game_hud.gd" id="11_kvpfn"]
+[ext_resource type="AudioStream" uid="uid://k3b3ufwnuwo" path="res://assets/sounds/bgtheme.mp3" id="12_bgtheme"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_p57ef"]
 panorama = ExtResource("1_iywne")
@@ -19,8 +25,37 @@ sky = SubResource("Sky_oa1go")
 glow_enabled = true
 glow_intensity = 2.0
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_p57ef"]
-size = Vector3(100, 1, 100)
+[sub_resource type="BoxShape3D" id="BoxShape3D_trtic"]
+size = Vector3(2, 17, 2)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_kvpfn"]
+friction = 0.0
+bounce = 1.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ir15t"]
+radius = 1.5
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ca42v"]
+size = Vector3(2, 300, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kvpfn"]
+bg_color = Color(inf, inf, inf, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1560903500000, 1560903500000, 1560903500000, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dinhu"]
+bg_color = Color(0.2, 0.8, 0.43137255, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [node name="Game" type="Node3D"]
 
@@ -34,19 +69,151 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 35.815193)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -37.201797, 0, 0)
 script = ExtResource("2_fc0e3")
 
+[node name="CollisionBody" type="StaticBody3D" parent="player1"]
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="player1/CollisionBody"]
+shape = SubResource("BoxShape3D_trtic")
+
+[node name="Arena" type="Node3D" parent="."]
+script = ExtResource("4_vtaks")
+
 [node name="player2" parent="." instance=ExtResource("3_ryrav")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37.43667, 0, 0)
 script = ExtResource("4_fc0e3")
 
-[node name="ballPrl" parent="." instance=ExtResource("6_p57ef")]
-transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
+[node name="CollisionBody" type="StaticBody3D" parent="player2"]
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="player2/CollisionBody"]
+shape = SubResource("BoxShape3D_trtic")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.34384155, 16.743101, 26.124678)
-light_energy = 11.392
-light_indirect_energy = 2.979
-omni_range = 194.104
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.34384155, 0.71149635, 6.482836)
+light_energy = 16.0
+light_indirect_energy = 3.969
+omni_range = 498.521
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.7537155, 0)
-shape = SubResource("BoxShape3D_p57ef")
+[node name="Ball" type="CharacterBody3D" parent="."]
+collision_layer = 2
+collision_mask = 5
+axis_lock_linear_z = true
+script = ExtResource("7_kvpfn")
+
+[node name="ballPrl" parent="Ball" instance=ExtResource("6_p57ef")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ball"]
+shape = SubResource("SphereShape3D_ir15t")
+
+[node name="ScoreZoneRight" type="Area3D" parent="." groups=["score_zones"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45, 0, 0)
+collision_layer = 8
+collision_mask = 2
+script = ExtResource("9_dinhu")
+player_number = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ScoreZoneRight"]
+shape = SubResource("BoxShape3D_ca42v")
+
+[node name="ScoreZoneLeft" type="Area3D" parent="." groups=["score_zones"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, 0, 0)
+collision_layer = 8
+collision_mask = 2
+script = ExtResource("9_dinhu")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ScoreZoneLeft"]
+shape = SubResource("BoxShape3D_ca42v")
+
+[node name="GameManager" type="Node" parent="."]
+script = ExtResource("10_kvuet")
+
+[node name="BackgroundMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("12_bgtheme")
+volume_db = -25.0
+autoplay = true
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("11_kvpfn")
+
+[node name="GameOverPanel" type="Panel" parent="HUD"]
+visible = false
+custom_minimum_size = Vector2(400, 200)
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/GameOverPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 177.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="WinnerLabel" type="Label" parent="HUD/GameOverPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Player X Wins!"
+horizontal_alignment = 1
+
+[node name="MainMenuButton" type="Button" parent="HUD/GameOverPanel/VBoxContainer"]
+layout_mode = 2
+text = "Main Menu
+"
+
+[node name="RestartButton" type="Button" parent="HUD/GameOverPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="HealthBarContainer" type="HBoxContainer" parent="HUD"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -250.0
+offset_top = 10.0
+offset_right = 250.0
+offset_bottom = 70.0
+grow_horizontal = 2
+theme_override_constants/separation = 150
+alignment = 1
+
+[node name="Player1Container" type="VBoxContainer" parent="HUD/HealthBarContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Label" type="Label" parent="HUD/HealthBarContainer/Player1Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Player 1"
+horizontal_alignment = 1
+
+[node name="HealthBar" type="ProgressBar" parent="HUD/HealthBarContainer/Player1Container"]
+custom_minimum_size = Vector2(200, 25)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_kvpfn")
+theme_override_styles/fill = SubResource("StyleBoxFlat_dinhu")
+value = 100.0
+show_percentage = false
+
+[node name="Player2Container" type="VBoxContainer" parent="HUD/HealthBarContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Label" type="Label" parent="HUD/HealthBarContainer/Player2Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Player 2"
+horizontal_alignment = 1
+
+[node name="HealthBar" type="ProgressBar" parent="HUD/HealthBarContainer/Player2Container"]
+custom_minimum_size = Vector2(200, 25)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_kvpfn")
+theme_override_styles/fill = SubResource("StyleBoxFlat_dinhu")
+value = 100.0
+show_percentage = false
+
+
+[connection signal="pressed" from="HUD/GameOverPanel/VBoxContainer/MainMenuButton" to="HUD" method="_on_main_menu_button_pressed"]
+[connection signal="pressed" from="HUD/GameOverPanel/VBoxContainer/RestartButton" to="HUD" method="_on_restart_button_pressed"]

@@ -16,6 +16,10 @@ run/main_scene="uid://qrb5r7ouscjr"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+SceneManager="*res://scripts/autoload/scene_manager.gd"
+
 [editor]
 
 version_control/plugin_name="GitPlugin"
@@ -24,3 +28,21 @@ version_control/autoload_on_startup=true
 [gui]
 
 common/main_scene="uid://qmvuwaycrh23"
+
+[layer_names]
+
+3d_physics/layer_1="Players"
+3d_physics/layer_2="Ball"
+3d_physics/layer_3="Walls"
+3d_physics/layer_4="ScoreZones"
+
+[physics]
+
+3d/default_linear_damp=0.0
+3d/default_angular_damp=0.0
+3d/sleep_threshold_linear=0.0
+3d/sleep_threshold_angular=0.0
+3d/time_before_sleep=0.0
+3d/solver/solver_iterations=1
+3d/solver/contact_recycle_radius=0.05
+3d/solver/contact_max_allowed_penetration=0.001
