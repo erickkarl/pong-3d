@@ -59,6 +59,3 @@ func _setup_collision_body() -> void:
 		return
 
 	collision_body.physics_material_override = PhysicsUtils.create_bouncy_material()
-
-	if collision_component:
-		collision_component.setup_collision_detection(collision_body)

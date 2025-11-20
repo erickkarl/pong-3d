@@ -4,6 +4,7 @@ class_name GameConstants
 const PADDLE_HALF_HEIGHT: float = 8.5
 const PADDLE_EXHAUST_OFFSET: float = 8.450854
 const PADDLE_SPEED_MULTIPLIER: float = 1.1
+const MAX_BALL_SPEED: float = 175.0
 const PLAYER_MOVEMENT_SPEED: float = 0.5
 
 const BALL_LAUNCH_DELAY: float = 1.0
@@ -31,4 +32,3 @@ const TARGET_FPS: float = 60.0
 
 ## Audio volume in dB
 const SFX_VOLUME_DB: float = 0.0
-

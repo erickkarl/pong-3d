@@ -44,25 +44,4 @@ func create_wall(pos: Vector3, size: Vector3) -> void:
 	mesh_instance.material_override = material
 	wall.add_child(mesh_instance)
 
-	setup_wall_collision_detection(wall, collision_shape)
 	add_child(wall)
-
-func setup_wall_collision_detection(wall: StaticBody3D, collision_shape_node: CollisionShape3D) -> void:
-	CollisionUtils.setup_ball_detection_area(
-		wall,
-		collision_shape_node,
-		_on_wall_ball_entered,
-		[wall]
-	)
-
-func _on_wall_ball_entered(body: Node3D, wall: StaticBody3D) -> void:
-	if body is Ball:
-		handle_ball_collision(body, wall)
-
-func handle_ball_collision(ball: Ball, wall: StaticBody3D) -> void:
-	if not ball.can_process_collision(wall):
-		return
-
-	ball.play_hit_sound()
-	ball.linear_velocity.y = -ball.linear_velocity.y
-	ball.set_collision_cooldown(wall, GameConstants.COLLISION_COOLDOWN_DURATION)

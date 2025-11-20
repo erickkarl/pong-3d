@@ -94,17 +94,10 @@ light_energy = 16.0
 light_indirect_energy = 3.969
 omni_range = 498.521
 
-[node name="Ball" type="RigidBody3D" parent="."]
+[node name="Ball" type="CharacterBody3D" parent="."]
 collision_layer = 2
 collision_mask = 5
 axis_lock_linear_z = true
-physics_material_override = SubResource("PhysicsMaterial_kvpfn")
-gravity_scale = 0.0
-continuous_cd = true
-contact_monitor = true
-max_contacts_reported = 1
-linear_damp_mode = 1
-angular_damp_mode = 1
 script = ExtResource("7_kvpfn")
 
 [node name="ballPrl" parent="Ball" instance=ExtResource("6_p57ef")]
@@ -221,6 +214,6 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_dinhu")
 value = 100.0
 show_percentage = false
 
-[connection signal="body_entered" from="Ball" to="player1" method="_on_ball_body_entered"]
+
 [connection signal="pressed" from="HUD/GameOverPanel/VBoxContainer/MainMenuButton" to="HUD" method="_on_main_menu_button_pressed"]
 [connection signal="pressed" from="HUD/GameOverPanel/VBoxContainer/RestartButton" to="HUD" method="_on_restart_button_pressed"]
