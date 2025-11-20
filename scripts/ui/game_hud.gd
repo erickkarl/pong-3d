@@ -39,8 +39,12 @@ func update_health_bar_color(health_bar: ProgressBar, health: int) -> void:
 	if not stylebox is StyleBoxFlat:
 		return
 
-	var style := stylebox as StyleBoxFlat
+	# Sempre duplica o stylebox para criar uma instância independente
+	# Isso garante que cada barra tenha seu próprio StyleBox
+	var style: StyleBoxFlat = stylebox.duplicate() as StyleBoxFlat
+	health_bar.add_theme_stylebox_override("fill", style)
 
+	# Agora modifica a cor do stylebox independente
 	if health > GameConstants.HEALTH_THRESHOLD_HEALTHY:
 		style.bg_color = GameConstants.HEALTH_COLOR_HEALTHY
 	elif health > GameConstants.HEALTH_THRESHOLD_WARNING:
