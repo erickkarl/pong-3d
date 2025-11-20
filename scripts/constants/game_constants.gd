@@ -5,7 +5,7 @@ const PADDLE_HALF_HEIGHT: float = 8.5
 const PADDLE_EXHAUST_OFFSET: float = 8.450854
 const PADDLE_SPEED_MULTIPLIER: float = 1.1
 const MAX_BALL_SPEED: float = 175.0
-const PLAYER_MOVEMENT_SPEED: float = 0.5
+const PLAYER_MOVEMENT_SPEED: float = 1
 
 const BALL_LAUNCH_DELAY: float = 1.0
 const BALL_RESET_DELAY: float = 2.0

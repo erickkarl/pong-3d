@@ -4,7 +4,7 @@ class_name Player
 
 @export var move_up_key: Key = KEY_UP
 @export var move_down_key: Key = KEY_DOWN
-@export var speed: float = 1.0
+@export var speed: float = GameConstants.PLAYER_MOVEMENT_SPEED
 @export var speed_multiplier: float = GameConstants.PADDLE_SPEED_MULTIPLIER
 
 var movement_component: PlayerMovement
