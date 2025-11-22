@@ -3,7 +3,7 @@ class_name PlayerEffects
 ## Manages particle effects and audio that respond to movement.
 
 
-const FIRE_ANIMATION := preload("res://assets/fx/exhaust_flame_vfx.tscn")
+const FIRE_ANIMATION := preload("res://assets/fx/flame/exhaust_flame_vfx.tscn")
 const FLARE_SFX := preload("res://assets/sfx/flareSFX.mp3")
 
 var player: Node3D

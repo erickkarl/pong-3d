@@ -32,3 +32,11 @@ const TARGET_FPS: float = 60.0
 
 ## Audio volume in dB
 const SFX_VOLUME_DB: float = 0.0
+
+## VFX Powerup constants
+const VFX_HEAL_AMOUNT: int = 10
+const VFX_SPAWN_AREA_X_MIN: float = -30.0
+const VFX_SPAWN_AREA_X_MAX: float = 30.0
+const VFX_SPAWN_AREA_Y_MIN: float = -20.0
+const VFX_SPAWN_AREA_Y_MAX: float = 20.0
+const VFX_COLLISION_RADIUS: float = 3.0

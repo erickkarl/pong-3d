@@ -1,7 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://drn8k4itwpo5m"]
+[gd_scene load_steps=7 format=3 uid="uid://qujuga0l62gj"]
 
 [ext_resource type="Texture2D" uid="uid://b2t8cvuqnulj" path="res://assets/textures/exhaustFlameText.png" id="1_onp1r"]
-[ext_resource type="ArrayMesh" path="res://assets/fx/exhaustFlameModel.obj" id="2_2xhq2"]
+[ext_resource type="ArrayMesh" uid="uid://c5dngkss50tar" path="res://assets/fx/flame/exhaustFlameModel.obj" id="2_2xhq2"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0tnpc"]
 transparency = 1

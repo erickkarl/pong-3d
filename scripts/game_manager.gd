@@ -47,3 +47,12 @@ func reset_game() -> void:
 
 	if ball:
 		ball.reset_ball()
+
+## Heals a player by the specified amount
+func heal_player(player_number: int, amount: int) -> void:
+	if player_number == 1:
+		player1_health = min(GameConstants.INITIAL_HEALTH, player1_health + amount)
+	elif player_number == 2:
+		player2_health = min(GameConstants.INITIAL_HEALTH, player2_health + amount)
+	
+	health_changed.emit(player1_health, player2_health)
