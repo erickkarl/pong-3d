@@ -2,7 +2,7 @@ extends Node3D
 class_name VFXSpawner
 ## Spawns powerup VFX after paddle hits in random positions between paddles.
 
-const VFX_SCENE = preload("res://assets/fx/exhaust_flame_vfx.tscn")
+const VFX_SCENE = preload("res://assets/fx/helling/helling.tscn")
 
 var current_vfx: PowerupVFX = null
 var ball: Ball
@@ -72,4 +72,3 @@ func spawn_vfx() -> void:
 
 func _on_vfx_collected(player_number: int) -> void:
 	current_vfx = null
-
