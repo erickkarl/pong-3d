@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://qmvuwaycrh23"]
+[gd_scene load_steps=23 format=3 uid="uid://qmvuwaycrh23"]
 
 [ext_resource type="Texture2D" uid="uid://dbw7j64akb0sh" path="res://assets/skybox/panorama_image.png" id="1_iywne"]
 [ext_resource type="PackedScene" uid="uid://2tuemeq172ed" path="res://assets/models/player1.glb" id="2_7jktm"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://c20fqd0lb711x" path="res://scripts/score_zone.gd" id="9_dinhu"]
 [ext_resource type="Script" uid="uid://c1w5scqm513ae" path="res://scripts/game_manager.gd" id="10_kvuet"]
 [ext_resource type="Script" uid="uid://hyjen7kruwy1" path="res://scripts/ui/game_hud.gd" id="11_kvpfn"]
+[ext_resource type="Script" path="res://scripts/vfx/vfx_spawner.gd" id="13_vfxspawner"]
 [ext_resource type="AudioStream" uid="uid://k3b3ufwnuwo" path="res://assets/sounds/bgtheme.mp3" id="12_bgtheme"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_p57ef"]
@@ -127,6 +128,9 @@ shape = SubResource("BoxShape3D_ca42v")
 
 [node name="GameManager" type="Node" parent="."]
 script = ExtResource("10_kvuet")
+
+[node name="VFXSpawner" type="Node3D" parent="."]
+script = ExtResource("13_vfxspawner")
 
 [node name="BackgroundMusic" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("12_bgtheme")

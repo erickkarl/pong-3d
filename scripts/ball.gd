@@ -4,6 +4,8 @@ class_name Ball
 
 const BALL_HIT_SFX := preload("res://assets/sfx/ballHitSFX.mp3")
 
+signal paddle_hit(player_number: int)
+
 @export var initial_speed: float = 40.0
 
 var last_collision_body: Node = null
@@ -11,6 +13,7 @@ var collision_cooldown: float = 0.0
 var hit_sound: AudioStreamPlayer3D
 
 var last_speed: float = 0.0
+var last_hit_player: int = 0  # 0 = nenhum, 1 = player1, 2 = player2
 
 func _ready() -> void:
 	# CharacterBody3D doesn't use gravity_scale/mass/etc like RigidBody3D
@@ -60,6 +63,11 @@ func _handle_collision(collision: KinematicCollision3D) -> void:
 	# The collider is likely the StaticBody3D child of the Player node
 	var parent = collider.get_parent()
 	if parent is Player:
+		# Identify which player hit the ball
+		var player_number: int = _identify_player_number(parent)
+		if player_number > 0:
+			last_hit_player = player_number
+			paddle_hit.emit(player_number)
 		parent.collision_component.handle_ball_collision(self)
 	else:
 		# Standard bounce for walls
@@ -82,6 +90,16 @@ func play_hit_sound() -> void:
 func reset_ball() -> void:
 	position = Vector3.ZERO
 	velocity = Vector3.ZERO
+	last_hit_player = 0
 	
 	await get_tree().create_timer(GameConstants.BALL_RESET_DELAY).timeout
 	launch_ball()
+
+## Identifies player number (1 or 2) based on position or name
+func _identify_player_number(player: Player) -> int:
+	# Player1 is typically on the left (negative X), Player2 on the right (positive X)
+	if player.position.x < 0:
+		return 1
+	elif player.position.x > 0:
+		return 2
+	return 0
