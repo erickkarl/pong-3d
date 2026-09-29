@@ -107,7 +107,6 @@ The core game loop is implemented: menu, match, health bars, game over. The proj
 
 **Known issues**
 
-- `scenes/game.tscn` references `res://assets/sounds/bgtheme.mp3`, which is not in the repository (it was removed in commit `45a71c9`). Restore the file or remove the `BackgroundMusic` node.
 - The **Settings** button on the main menu is a placeholder. Its signal points to a handler that does not exist.
 - The game-over **Restart** button has no label.
 - The ball can flicker, and the collision cooldown is a workaround that needs a proper fix.
